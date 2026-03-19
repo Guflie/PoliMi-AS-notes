@@ -1,6 +1,6 @@
 \documentclass{article}
 
-% ========== PACKAGES ==========
+% ========== PACKAGES ====================================================================
 \usepackage{graphicx}
 \usepackage{amsmath}
 
@@ -13,9 +13,21 @@
 \usepackage{xspace} 
 % to add spaces after personalized commands
 
-% ========== PERSNALIZED COMMANDS ==========
+\usepackage{wrapfig}
+% to allign vertically images and text
 
-% ========== HEADER ==========
+\usepackage{enumitem}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\usepackage{xcolor}
+
+% ========== PERSNALIZED COMMANDS ========================================================
+
+\newcommand{\expect}{\mathbb{E}}
+
+% ========== HEADER ======================================================================
 \title{062102 - Applied Statistics}
 \author{Guflie}
 
@@ -23,7 +35,7 @@
 \graphicspath{ {img/} }
 
 \begin{document}
-% ========== TITLE ===========
+% ========== DOC =========================================================================
 \centering
 \includegraphics[width=10cm]{polimi_logo.pdf}
 
@@ -41,8 +53,11 @@
 {\large Authors}: Guflie \\
 \vspace{0.2cm}
 {\large Professor}: Massi Michela Carlotta \\
+\newpage
 
-\pagebreak
+\tableofcontents
+\newpage
 
+\include{arguments/introduction.tex}
 
 \end{document}

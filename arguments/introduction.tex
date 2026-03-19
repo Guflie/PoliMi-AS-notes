@@ -1,0 +1,151 @@
+\section{Introduction}
+
+Statistic is the foundation for all data-driven decision-making processes, also
+in the AI era: in fact, nowdays machine learning models rely mostly on statistical
+methods. The main difference resides in the purpouse: \textit{ML models} are designed to 
+make the most accurate prediction possible, \textit{statistical models} instead aim to 
+make inference about the relatioship between the data.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{introduction/ml_statistic_intersection.png}
+\end{figure}
+
+In this course we are going to deal with \textit{multivarieated data}, meaning that each data
+point contains several variables, defining their \textit{dimensions}. Representing this data 
+with matrices is the more convient way.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{introduction/multivariated_data_example.png}
+\end{figure}
+
+\vspace{1cm}
+
+As for ML, we have diffent classes of methods based on the available data and how we 
+interpret them:
+\begin{description}[itemsep=0.6cm]
+    \item[Supervised learning] \hfill \\
+    \begin{minipage}{0.9\textwidth}
+        \begin{wrapfigure}{l}{0.3\textwidth}
+            \includegraphics[width=0.25\textwidth]{introduction/target_feature_relationship.png}
+        \end{wrapfigure}
+        \hfill \\
+        In this class we can idenitify a \textbf{target} variable $Y$ and a set of "input"
+        variables $X$ called \textbf{features}.  Targets and features relationship is
+        expressed trougth a function affected by a certain error $\varepsilon$: 
+        $Y=f(X)+\varepsilon$. The error $\varepsilon$ is something we can never get rid of
+        it, we should think about it as a property of the data.\\
+        Tipically in this set of method we try to make prediction about new target values or 
+        finding those features that are more important to explain the targets.
+    \end{minipage}
+    
+    \item[Unsupervised learning] \hfill \\
+    \begin{minipage}{0.9\textwidth}
+        \begin{wrapfigure}{l}{0.3\textwidth}
+            \includegraphics[width=0.25\textwidth]{introduction/example_unsupervised.png}
+        \end{wrapfigure}
+        \hfill \\
+        In this case there aren't target varibales, but we all the varibales are features 
+        ($f(X)\approx X$). \\ This set of models focuses on explloting structures and patterns
+        within the data itself.
+    \end{minipage}
+\end{description}
+\vspace{0.8cm}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.6\textwidth]{introduction/methods_taxonomy.png}
+    \caption{Taxionomy of the methods explored during the course.}
+\end{figure}
+\newpage
+
+\subsection{Model goodens}
+How do we find a good model for our data? \\
+To start, let's take linear models as examples, like $Y=\beta_0 x_0 + \beta_1 x_1 \dots + 
+\beta_p x_p$. \\
+The models we want to use are expressed trough a set of \textbf{parameters} of our choice
+(in the previous example we have $p+1$ parameters); the goal is to tune these parameters
+using training data in order to shape our function accordingly to the data. However most 
+of the times linear models are not complex enough, and we have to shift toward more complex 
+ones.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{introduction/linear_quadratic_models_comparison.png}
+    \caption{Comparison between linear model ($f(X)=\beta_o + \beta_1 x$) and quadratic 
+    model ($f(X)= \beta_0 + \beta_1 x +\beta_2 x^2$).}
+\end{figure}
+
+Usually the choice of a model is influenced by some trade-offs:
+\begin{itemize}
+    \item \textit{prediction accuracy vs interpretability} : we might trade-off the model's
+    accuracy to make it more interpretable
+    \item \textit{parsimony principle} : usually we prefer simpler models involving fewer
+    variables since they're easier to manage
+    \item \textit{good fit vs over-fit or under-fit } : see below
+\end{itemize}
+\newpage
+
+\subsection{Underfitting vs Overfitting problem}
+
+Start with the example of estimating the height of the next student entering the room 
+during lecture, in order to do that our prediction $\hat{y}$ should minimize a certain 
+function, usually the \textbf{Mean Squared prediction Error (MSE)}.
+\begin{equation*}
+    MSE(\hat{y})=\frac{1}{n}\sum_{i=1}^n (\hat{y}_i-y_y)^2
+\end{equation*}
+
+If we know the height of all students, we want to use the population mean $\mu$ as 
+predictor, doing so we get as MSE $\mathbb{E}[(Y-\mu)^2]=Var(Y)=\sigma^2$.\\
+\textcolor{red}{
+    \textbf{The data variance is irriducible, we can't do better than that.}
+}
+\newline
+
+However, it's impossible to have information about the whole population; so what we do
+is taking a small sample from it over and over, using the sample mean $\bar{Y}$ as $\mu$
+and getting $MSE_{avg}=\mathbb{E}[(\hat{Y}-Y)^2]$. By decomposing the average MSE we are
+able to understand which are our sources of error: this reduction leads to two source of
+errors, \textit{bias} and \textit{variance}.
+\begin{description}
+    \item[Bias]: $Bias*(\hat{Y})=\expect[\hat{Y}-\mu]$, we have bias if our predictions 
+    are systematically to high or too low
+    \item[Variance]: $Var(\hat{Y})=\expect[(\hat{Y}-\expect[\hat{Y}])^2]$ , we have
+    high variance if our predictions are very sensitve on the sampling we draw from 
+    the universe
+\end{description}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{introduction/bias_variance_idea.png}
+\end{figure}
+
+So if we try to fit a model $f(X)$ with some training data, and we end up with $\hat{f}(X)$
+with some test observation $(x_0,y_0)$, we have that
+\begin{equation*}
+    \expect[y_0-\hat{f}(x_0)] = Var[\hat(f)(x_0)] + Bias[\hat{f}(x_0)]^2 + Var(\varepsilon)
+\end{equation*}
+\begin{description}
+    \item[Varince]: captures how much our model changes based on the training dataset
+    \item[Bias]: the inherith error we get from our models
+    \item[Noise]: ambiguity due the data distribution   
+\end{description}
+\newpage
+
+If we take a model too much simple, we end up with something having high bias, but not really
+suscpible to training set (low variance) $\Rightarrow$ \textbf{Underfitting}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{introduction/underfitting.png}
+\end{figure}
+
+If instead we use a model too complex we get something with very low bias, but extrimelly
+sensitive to the data we sample $\Rightarrow$ \textbf{Overfitting}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{introduction/overfitting.png}
+\end{figure}
+
+What we see in practise is that Bias and Variance are strictly correlated: while one of the
+two decreases, the other increases. This force us to find some trade-off between these twos.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{introduction/tradeoff_bias_variance.png}
+\end{figure}
