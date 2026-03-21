@@ -20,12 +20,14 @@
 
 \usepackage{amssymb}
 \usepackage{amsmath}
-
 \usepackage{xcolor}
+\usepackage{ragged2e}
+\usepackage{subcaption} % to make subfigures
 
 % ========== PERSNALIZED COMMANDS ========================================================
 
 \newcommand{\expect}{\mathbb{E}}
+\newcommand{\real}{\mathbb{R}}
 
 % ========== HEADER ======================================================================
 \title{062102 - Applied Statistics}
@@ -58,6 +60,8 @@
 \tableofcontents
 \newpage
 
-\include{arguments/introduction.tex}
+\input{arguments/introduction.tex}
+\newpage
+\input{arguments/dimensionality reduction/dimensionality_reduction.tex}
 
 \end{document}
