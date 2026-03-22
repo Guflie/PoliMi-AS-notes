@@ -4,13 +4,13 @@ What if we have $n$ data points, $p$ features and $n>p$?
 It means that some fatures might look somethign completelly different, but in 
 reality some of them are just a combination of the others $\rightarrow$ we 
 have \textbf{collinear features}.
-Collinear features make out job of understanding how each feature influences
+Collinear features make our job of understanding how each feature influences
 the targets: let's assume that $x_1$ and $x_2$ are collinear
 \begin{equation}
     y = \beta_0 + beta_1 x_1 + beta_2 x_2 +\varepsilon
 \end{equation}
 due collinearity, we can't see the individual effect of $x_1$ and $x_2$ on $y$.
-\vspace{0.8cm}
+%\vspace{0.8cm}
 
 \begin{figure}[h]
     \centering
@@ -21,27 +21,31 @@ set ok $k$ derived features; to do this we must balance the clarity of
 representation and the loss of information due the compression $\Rightarrow$ 
 \textbf{Principal Cpmponent Analysis (PCA)} aims to do this using linear 
 combinations of the selected variables.
-\vspace{0.8cm}
 
-Immagie that we want to describe our blood cells sample, and the initial 
+\begin{figure}[h]
+    \centering    
+    \includegraphics[width=0.2\textwidth]{dr/pca/blood_cells.png}
+\end{figure}
+
+Immagine that we want to describe our blood cells sample, and the initial 
 features are \textit{diameter} and \textit{thickness}, how can we reduce
 the number of features?
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{dr/pca/blood_cells.png}
-\end{figure}
+\newpage
 
 We can think of projecting the points along one fo the two dimension, choosing
 based on how spreaded the data are along it (e.g. so preserving more information).
 \begin{center} \textcolor{red}{
     \textbf{In statitics information = variability.}   
 } \end{center}
-\hfill \\
 \begin{figure} [h]
-    \begin{subfigure}{0.5\textwidth}
+    \centering
+    \begin{subfigure}[c]{0.2\textwidth}
+        \centering
         \includegraphics[width=\linewidth]{dr/pca/dr_blood_ex1.png}
     \end{subfigure}
-    \begin{subfigure}{0.5\textwidth}
+    \hspace{1cm}
+    \begin{subfigure}[c]{0.2\textwidth}
+        \centering
         \includegraphics[width=\linewidth]{dr/pca/dr_blood_ex2.png}
     \end{subfigure}
 \end{figure}
@@ -50,13 +54,15 @@ So we need a way to capture the maxiaml variability of the data, or on other
 words to find \textit{along which dimension the data spread the most}.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{dr/pca/pca_maxvar_example.png}
+    \includegraphics[width=0.3\textwidth]{dr/pca/pca_maxvar_example.png}
 \end{figure}
 
 PCA's goal is to project the data along those directions of maximal variability,
-ending up with a new reference system for the data points.\\
-\textcolor{gray}{It's nothing different from vector space rotations, in 2D you
-visualize it by immagin that the axis rotate}.
+ending up with a new reference system for the data points \textcolor{gray}{(it's 
+nothing different from vector space rotations, in 2D you visualize it by immaging
+that the axis rotate)}.\\
+\hfill \\
+
 This objective can be expressed in two ways:
 \begin{enumerate}
     \item \textbf{Maximize variance}: maximize the data spread along that
@@ -66,7 +72,7 @@ This objective can be expressed in two ways:
 \end{enumerate}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{dr/pca/pca_goal_visualzed.png}
+    \includegraphics[width=0.4\textwidth]{dr/pca/pca_goal_visualzed.png}
 \end{figure}
 
 In order to do the PCA:

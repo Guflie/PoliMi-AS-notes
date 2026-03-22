@@ -12,7 +12,7 @@ When dealing with big data (also not very big) we'll always clash with the
 Let's look at the \textbf{exmaple} of categoryzing some bacteria:
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{dr/exmaple_cd_1d.png}
+    \includegraphics[width=0.4\textwidth]{dr/exmaple_cd_1d.png}
 \end{figure}
 
 To separate the groups better we add new information about another measure
@@ -21,41 +21,46 @@ we're considering two features for each point, if you think about it you are
 in fact adding information and making the points more different from each other)}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.3\textwidth]{dr/example_cd_2d.png}
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{dr/example_cd_2d.png}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{dr/example_cd_2d_expl.png}
+        {
+            \captionsetup{width=1.5\linewidth, margin={0cm, -3cm}, labelformat=empty}
+            \caption{If we try to maintain for the 2-d scenario the same density of 
+            the 1-dimension case, we would end up with 81 samples.}
+        }
+    \end{subfigure}
 \end{figure}
 
-If we try to maintain for the 2-d scenario the same density of the 1-dimension 
-case, we would end up with 81 samples.
+If we extend the space up to the 3th dimension we are capable of 
+distinguish the data using only a linear model. To do the same in 2 dimensions
+we should have used more complex models.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.3\textwidth]{dr/example_cd_2d_expl.png}
-\end{figure}
-
-So why adding dimensions is useful? By adding dimensions we make the space "wider"
-and the job of separating the points becomes easier.
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}{0.4\textwidth}
+    \begin{subfigure}[t]{0.4\textwidth}
+        \centering
         \includegraphics[width=0.9\linewidth]{dr/example_cd_3d.png}
     \end{subfigure}
-    \begin{subfigure}{0.4\textwidth}
+    \begin{subfigure}[t]{0.4\textwidth}
+        \centering
         \includegraphics[width=0.9\linewidth]{dr/exmaple_3d_divison.png}
     \end{subfigure}    
 \end{figure}
 
-In the example before by extending to the 3th dimension we are capable of 
-distinguish the data using only a linear model. To do the same in 2 dimensions
-we should have used a more complex model.
-
-\vspace{0.8cm}
+\newpage
 Another phenomena of the curse of dimensionality is \textbf{Distance concentration}: as 
 the number of samples goes to infinity, the relatve distances between point tend to 
 become zero, starting to conecetrate on the expected value.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{dr/distance_concentration.png}
+    \includegraphics[width=0.7\textwidth]{dr/distance_concentration.png}
 \end{figure}
 
-\newpage
+\vspace{3cm}
 \input{arguments/dimensionality reduction/pca.tex}
+
 \input{arguments/dimensionality reduction/nlinear_dr.tex}
