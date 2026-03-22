@@ -150,7 +150,12 @@ feature to translate to the new PCA coordinates system.
     \centering
     \includegraphics[width=0.7\textwidth]{dr/pca/pca_projection_example.png}
 \end{figure}
+
 \hfill \\
+Note: standardization (minus mean divided by std-dev) address the problem of
+high-variance features dominating principal components
+\hfill \\
+
 
 \textbf{Why this stuff does it works?}\\
 Usually the data variability depends only on a small subset of all $p$ features, 
@@ -193,4 +198,29 @@ of dimension in $K$ based on the CumEV index.
     \centering
     \includegraphics[width=0.6\textwidth]{dr/pca/cev_visualized.png}
 \end{figure}
+This technique can be used also to other purpouses that only tune the variance
+level, can be used also to set the treshold to remove the noise from the data.
+
+\subsubsection{How to intepret PCs}
+The weight values can be used to intepret the meaning of the PCs.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/pca/interpret_pcs.png}
+\end{figure}
+\hfill\\
+
+Another useful way to intepret the PCs' meaning is the \textbf{biplot}: using
+PCs as axis, we plot both the points projected on the dimensions and the original
+feautres.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{dr/pca/biplot_example.png}
+\end{figure}
+and we read the thing as:
+\begin{itemize}
+    \item \textbf{arrow direction}: along which direction the feature increases
+    \item \textbf{arrow length}: how strongly the features is represented by
+    these PCs
+    \item \textbf{angle between arrows}: relationship between original features
+\end{itemize}
 

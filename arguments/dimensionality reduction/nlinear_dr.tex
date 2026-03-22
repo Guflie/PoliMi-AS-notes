@@ -1,0 +1,188 @@
+\subsection{Non-Linear dimensionality reduction}
+In real-life data usually we can assume the \textbf{Manifolds assumption}:
+\begin{center}
+    \textit{High-dimensional real data is not scattered uniformly across the ambient 
+    space (i.e., the space spanned by the d-original dimensions). Rather, it often 
+    lies on (or near to) a much lower dimensional, curved manifold.}    
+\end{center}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{dr/non_linear/manifold_vis.png}
+\end{figure}
+PCa is a linear DR techinque, for real data we need techniques able to properly
+model complex non-linear shapes.
+
+%-----------------------------------------------------------------------------------------
+\subsubsection{Kernel PCA methods}
+This method famility follows the idea that \textit{data might be non-linear in $\real
+^D$ but become "more linear" after a non-linear feature mapping $\phi()$}.
+The non-linear transformation is called \textbf{bias expansion} and can be choosen
+accordgnly to the analyst's assumption about the shape of the feature, $\phi: \real
+^p \rightarrow \real^q$; usually we take $q>p$ and transform the sampled data into 
+an higher-dimensional space.\\
+\hfill \\
+
+We define the basis-expanded matrix $\Phi=(\phi(x_1)\dots \phi(x_n))^T\rightarrow
+\Sigma=\Phi^T\Phi$. However, for big-dimensional projections this approach could
+be computationally expensive. In this case we can take advantage of the
+\textbf{kernel trick}: we can compute $\Sigma_{i,j}=k(x_i,x_j)$ using a \textit{kernel 
+function $k(,)$}, which measures the similarity between two projections and it's 
+defined by $k(x_i,x_j)=\langle\phi(x_i),\phi(x_j)\rangle$ (scalar product).
+\hfill \\
+
+One of the advantages of this method is the ability of untangling circles.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/nldr_untangling_circles.png}
+\end{figure}
+\vspace{0.8cm}
+
+The problem with Kernel PCA is the reconstructionof the original space: with linear
+PCA the inverse is explicit and it's exact if projection and original space have the
+same dimension, approximante if the projection space has less dimensions than the 
+original one. In \textit{Kernel PCA} however $\phi$ is learned/induced by the data
+and this could end up in having complex inverse transformations, if not even
+non-invertible $\phi$. The only solution to this is to relay on learning the
+pre-image of the trasmformation, or more commonly an approximated one.
+% this images can be displayed side to side
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/inv_kernelPCA.png}    
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/kernel_reconst.png}    
+\end{figure}
+
+%-----------------------------------------------------------------------------------------
+\subsubsection{t-distributed Stochastic Neighbour Embedding (t-SNE)}
+The key idea of this family of methods is to \textit{preserve the data geometry by
+focusing on local neighbours (points near to each other should remain close after
+the projection)}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/global_vs_local_neigbhbours.png}
+    \caption{On the left distance computed acconrdingly to global distance; on the
+    right distance computed trought local neighbour.}
+\end{figure}
+This type of methods are really useful for data visualization.
+\hfill \\
+
+As reported in the figure, the problem with global similarity is that doesn't
+striclty follows the data shape, while based on similarity between point we \dots
+watch the recording. To do that, we don't need to preserve the distances with respect
+to allo the points, but just with his neighbours. This allow to preserve the 
+geometric relationship of the data. 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/nlpca_shape_preservation.png}
+\end{figure}
+\hfill \\
+
+t-SNE is mainly focused on preserving neighbourhood: points that are close in the
+original space should stay clore in the mapping, otherwise they aren't forced to 
+preserve the "right far distance" (not blobal distance as focus).
+\hfill \\
+I translate the distance into probability: if two points are close, they have higher
+probability of being neighbours.
+To determine the negihbourhood concept, the t-SNE firstly determines the \textbf{
+similarity score} between points based on the distance between them and a \textit{
+probability distribution}, which allows to decrease the probability smoothly base 
+on the distance between points
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/tSNE-similarity.png}
+\end{figure}
+
+For each pair of points $i,j$ we could define the \textbf{Gaussian neighbourhood 
+distribution} (fore example) as \textcolor{gray}{(we could think about is as "the 
+probability that $x_i$ would pick $x_j$ as neighbour")}:
+\begin{equation}
+    p_{j|i}= \begin{cases}
+        \cfrac{exp(-\| x_i - x_j \|^2/(2\sigma_i)^2)}{\sum_{j\neq i}exp(-\| x_i - x_j 
+        \|^2/(2\sigma_i)^2)} & j\neq i \\
+        0 & j=i
+    \end{cases}
+\end{equation}
+then to make the relationship simmetric $p_{ij} = \frac{p_{i|j}+p_{j|i}}{2}$.\\
+To project as much as possibile these similarities on a low-dimensional spaces, instead
+of using normal distribution t-SNE use \textit{t-student} to discern due its heavier
+tails
+
+For the low-dimensional space we use instead a \textit{t-student distribution}: by 
+projecting the data on fewer dimensions, the points will end up being more squashed 
+together, making the Normal distribution not suited (it will end up considering all the 
+points in the same cluster). The \textit{t-student} instead having heavier tails make
+the probability distribution more evenly spread, leveragin the dimensionality reduction
+squash effect (also called \textit{crowding problem}) $\rightarrow$ thanks to the heavier
+tails, low-D points can be pushed away without making $q_{ij}$ too small.
+\begin{equation}
+    p_{ij}= \begin{cases}
+        \cfrac{(1-\| y_i - y_j \|^2)^{-1}}{\sum_{j\neq i}(1-\| y_i - y_j \|^2)^{-1}} 
+        & j\neq i \\
+        0 & j=i
+    \end{cases}
+\end{equation} 
+\hfill \\
+
+Using different distributions and different dimensionality, we end up with two different
+\textbf{similarity matricies}, and out objective becomes making them look alike as much 
+as possible $\rightarrow$ minimizingthe mismatch between $p_{ij}$ and $q_{ij}$. To do
+tath we iterate to end up with a low-D similarity matrix that is similar to the original
+one.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/similmat_comparison.png}
+\end{figure}
+\begin{equation}
+    C(Y) = KL(P | Q) = \sum_{i\ne j} p_{ij}\log \frac{p_{ij}}{q_{ij}}    
+\end{equation}
+the difference is computed using \textit{KL divergence}, which is a way to measure distance
+between probabilities.
+\\
+This cost heavily penalizes high mistatch and has strong local structure preservation 
+\textcolor{gray}{(focus on maintainig true neighbours, not in preserving the true 
+far-away distances)} $\rightarrow$ this might cause \textbf{distortion of the global
+structure}.
+\\
+\textbf{Perplexity on hyperparameters}\\
+How do we choose hyperparameters? By changing the variance of the distributions we shape
+the concept of neighbourhood, changing the preplexity ($perp. ~ \sigma^2$) $\rightarrow$ 
+we have to balance between the dimensionality of the data and  how many cluster do we 
+expect to have.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/hyperparam_perplexity.png}
+\end{figure}
+
+%-----------------------------------------------------------------------------------------
+\subsubsection{Uniform Manifold APproximantion (UMAP)}
+The idea of this method is still to preserve neighbourhood but using different approach:
+we build a graph in the high-D space linking the points and we try to apply the same graph
+on the low-D space to preserve the structure as much as possible.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/umap_concept.png}
+    \caption{High-D and low-D graphs using UMAP}
+\end{figure}
+To build the graph, we place circles centered on the data points, and those points having
+overlapping circles are neighbours $\rightarrow$ the circle's radius is critical
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/umap_radius.png}
+\end{figure}
+To overcome this problem we can extend the algorithm using a \textit{local radius}: instead
+of fixed value, for some point we use the distance from its n-th neighbour as radius, and
+using somethig similar to a dstance as weight of the edge.
+\\
+Differently to \textit{t-SNE} and its perplexity, this method tunes two different parameters:
+\begin{description}
+    \item[Nearest neighbour]: the number of neighbours used for the high-D radius, tunes how
+    "wide" my clusters will be
+    \item[Min distance]: tunes how much tyghtly data points are gonna be projected in the 
+    low-D space \textcolor{gray}{(I'm putting some external knwoledge to make the data plots
+    more clear, very dangerous for inference)}.
+\end{description}
+\hfill \\
+UMAP algorithm is way faster that t-SNE, uses a more efficient to shuffle the data.
+
