@@ -117,7 +117,7 @@ the probability distribution more evenly spread, leveragin the dimensionality re
 squash effect (also called \textit{crowding problem}) $\rightarrow$ thanks to the heavier
 tails, low-D points can be pushed away without making $q_{ij}$ too small.
 \begin{equation}
-    p_{ij}= \begin{cases}
+    q_{ij}= \begin{cases}
         \cfrac{(1-\| y_i - y_j \|^2)^{-1}}{\sum_{j\neq i}(1-\| y_i - y_j \|^2)^{-1}} 
         & j\neq i \\
         0 & j=i
@@ -186,3 +186,82 @@ Differently to \textit{t-SNE} and its perplexity, this method tunes two differen
 \hfill \\
 UMAP algorithm is way faster that t-SNE, uses a more efficient to shuffle the data.
 
+%-----------------------------------------------------------------------------------------
+/subsubsection{AutoEncoders (AE)}
+The problem with \textit{Kernel PCA} is that is really difficult to turn back in the
+original data space, while \textit{t-SNE/UMAP} are good for visualization but we can't
+do inference with them. The idea is to use a new class fo algorithms capable of going
+back and forth between high-D and low-D spaces: \textit{Autoencoders}, composed by two
+subfunctions, \textit{encoders} and \textit{decoders}, which learn a non-linear mapping 
+between spaces.
+\begin{description}
+    \item[Encoder (compression)]: \hfill \\
+    $z_i=f_\theta(x_i),\ f_\theta:\real^D\rightarrow\real^d$ with $z=f_\theta(x)=\sigma(Wx+b) 
+    \rightarrow$ the conders apply a non-linear function \ssigma := activation function on 
+    pre-linear-combination $Wx+b$ (\ssigma, $W$, $b$ are parameters)
+    \item[Decoders (reconstruction)]: \hfill \\
+    $\hat{x}_i=g_\phi(z_1),\ g_\phi:\real^d\rightarrow \real^D$ with $\hat{x}=g_\phi(z)=
+    \rho(Vz+c)$; the structure is the same as encoder, just in the other way around (and 
+    uses \diff params).
+\end{description}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dr/non_linear/autoencoders__sketch.png}
+\end{figure}
+We can tune the parameters to lose as less information as possible during compression/
+reconstruction phase, maybe even remove only the information we want to loose $\rightarrow$
+Autoencoders allow us to decide what we lose.\\
+\vspace{0.5cm}
+
+\textbf{Training objective}: to tune the parameter sets $\theta,\phi$ in order to make the
+reconstruction as losless as possible, we have to \textit{train the algoirthm}:
+\begin{equation}
+    \hat{x}_i=g_\phi(f_\theta(x_i)) \rightarrow \min_{\theta,\Phi} \frac{1}{n} 
+    \mathcal{L}(x_i,\hat{x_i})
+\end{equation}
+Commonly we choose $\mathcal{L}(x_i,\hat{x}_i)=\| x_i-\hat{x}_i \|_2^2$.
+
+\textcolor{gray}{
+This method doesn't allow to explain the data variabilty induced by each dimension like in 
+PCA, however stiil allow to tune the level the information/varibaility we want to keep
+$\rightarrow$ very useful to identify data anomaly: if a point is very far away the original
+space will be projected far away, and also during the reconstrucion phase the decoder will try
+to reconstruct it as normal point, giving high reconstruction error and displaying on which 
+dimension the anomalies are. 
+}
+
+\subsubsection{How to choose non-linear DR methods}
+Based on your goal:
+\begin{itemize}
+    \item \textbf{Data visualization}: use \textit{UMAP} as default, good balance between 
+    execution time and accuracy (sometimes preserves also the gloabl organization); use 
+    \textit{t-SNE} when you mainly concern on displaying local cluster separation.
+    \item \textbf{Nonlinear feature engeineering (reusable mapping)}: \textit{autoencoders}
+    are the best to find explicit mapping; \textit{Kernel PCA} is a good fit for medium-sized
+    dataset for which we have some domain model.
+    \item \textbf{Data interpretability (like PCA loadings)}: PCA, that's it    
+\end{itemize} 
+\vspace{0.3cm}
+Method recomendations:
+\begin{description}
+    \item[Kernel PCA]
+        \begin{description}
+            \item[\textcolor{green}{Pros}]: linearize non-linear structure if a kernel can and
+            the dataset sie is manageable.
+            \item[\textcolor{red}{Cons}]: not suited for large datasets, and urge the need for
+            inverse function, usually only computable trough pre-image approximation. 
+        \end{description}
+    \item[t-SNE/UMAP]:      
+        \begin{description}
+            \item[\textcolor{green}{Pros}]: use them for visual exploration of local clusters.
+            \item[\textcolor{red}{Cons}]: due the global structure distrortion, they can't be
+            used to draw conclusions and doing inference.
+        \end{description}
+    \item[AutoEncoders]:
+        \begin{description}
+            \item[\textcolor{green}{Pros}]: learn mapping between spaces, allowing reconstruction
+            or interpretability capabilities.
+            \item[\textcolor{red}{Cons}]: complexity overhead, with smaller datasets there might
+            be overfitting.
+        \end{description}   
+\end{description}
