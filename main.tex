@@ -1,6 +1,6 @@
 \documentclass{article}
 
-% ========== PACKAGES ====================================================================
+% ========== PACKAGES ==========================================================
 \usepackage{graphicx}
 \usepackage{amsmath}
 
@@ -27,14 +27,16 @@
 
 \usepackage{silence} % to silence overflow warnings
 
-% ========== PERSNALIZED COMMANDS ========================================================
-
+% ========== PERSNALIZED COMMANDS ==============================================
 \newcommand{\expect}{\mathbb{E}}
 \newcommand{\real}{\mathbb{R}}
+\newcommand{\prob}{\mathbb{P}}
 \newcommand{\ssigma}{$\sigma$\xspace}
 \newcommand{\diff}{$\neq$\xspace}
+\newcommand{\arrow}{$\rightarrow$\xspace}
+\newcommand{\seps}{$\varepsilon$\xspace}
 
-% ========== HEADER ======================================================================
+% ========== HEADER ============================================================
 \title{062102 - Applied Statistics}
 \author{Guflie}
 
@@ -42,7 +44,7 @@
 \graphicspath{ {img/} }
 
 \begin{document}
-% ========== DOC =========================================================================
+% ========== DOC ===============================================================
 \centering
 \includegraphics[width=10cm]{polimi_logo.pdf}
 
@@ -67,6 +69,7 @@
 
 \include{arguments/introduction.tex}
 \include{arguments/dimensionality reduction/dimensionality_reduction.tex}
-\include{arguments/clustering/clustering}
+\include{arguments/clustering/clustering.tex}
+
 
 \end{document}

@@ -162,16 +162,17 @@ We iterate unitl the algorithm converges, e.g. the points won't change cluster.
     datashapes
 \end{itemize}
 
+\newpage
 %-----------------------------------------------------------------------------------------
 \subsection{Hierarchical clustering}
 %It can be used for many many things, not only for clustering
 This method builds a hierarchy among the clusters using a \textbf{Distance Matrix D}, which 
 contains the distance between each pair of samples. To stop the procedure we have to define 
 a \textbf{cutting criterion} to stop the construction of the \textbf{dendogram} := 
-representation of your cluster.
+representation of your cluster.\\
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{clustering/hierachical/dendogram_example.png}
+    \includegraphics[width=0.4\textwidth]{clustering/hierachical/dendogram_example.png}
 \end{figure}
 The algorith can both start by considering each datapoint in a \diff cluster and then
 merging them, or start from a one big cluster and progressively split it.
@@ -194,27 +195,244 @@ How do we computer the "center" between build-up clusters?
     cluster
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.2\textwidth]{clustering/hierachical/single_linkage.png}        
+        \includegraphics[width=0.1\textwidth]{clustering/hierachical/single_linkage.png}        
     \end{figure}
 
     \item[Average link]: cluster-distance is based on the average position of the cluster
     datapoints
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.2\textwidth]{clustering/hierachical/avg_linkage.png}        
+        \includegraphics[width=0.1\textwidth]{clustering/hierachical/avg_linkage.png}        
     \end{figure}
 
     \item[Complete link]: cluster-distance is based on the most distant points from each
     cluster
-    \begin{figure}[h]
+    \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.2\textwidth]{clustering/hierachical/complete_linkage.png}        
+        \includegraphics[width=0.1\textwidth]{clustering/hierachical/complete_linkage.png}        
     \end{figure}
 
 \end{description}
 There is no rule of thumb, start with the average and adjust things.
 % what about the mode for this one?
 
+\newpage
+%\vspace{0.5cm}
+%-----------------------------------------------------------------------------------------
+\subsection{Density-based clustering, DBSCAN}
+The idea is thinking about clusters as \textit{dense regions} of my data space separated by regions 
+of low-desnity points. This method, not being based on distances, is very useful for data 
+distributed following strange shapes. We also don't need to specify the number of clusters 
+in advance.
+
+\paragraph{Density-Based Spatial Clustering of Applications with Noise (DBSCAN)} \hfill \\
+This method is able to find arbitrary shaped cluster without prefixed total number, also in 
+presence of noise. We can tune using two parameters:
+\begin{itemize}
+    \item \texttt{eps} $\varepsilon$: distance used to define neighbourhoods $\rightarrow$ used to 
+    define the area on which we figure out the density
+    \item \texttt{minPts}: minimum number of points to define a cluster
+\end{itemize}
+\hfill \\
+Given these parameters, we divide the datapoints in some classes:
+\begin{description}
+    \item[Core point]: is some point having at least 
+    \item[Border point]: is reachable (is in the redius) from a core point, but contering a circle
+    on himself there aren't enough points to form a cluster
+    \item[Noise points]: neither \textit{core point} or \textit{border point}, it's an 
+    outlier
+\end{description}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{clustering/density/DBSCAN_point_categories.png}
+\end{figure}
+\hfill \\
+
+\paragraph{Algorithm steps}\hfill\\
+\begin{enumerate}
+    \item label the datapoints as core, border and noise
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.15\textwidth]{clustering/density/dbscan_step1.png}
+    \end{figure}
+    \item connect those cores that are neighbours (they're in the circe of another core-point) and
+    generate a cluster
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.15\textwidth]{clustering/density/dbscan_step2.png}
+    \end{figure}
+    \item connect the border-points to the nearest core-point, and remove the noise-points
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.15\textwidth]{clustering/density/dbscan_step3.png}
+    \end{figure}
+\end{enumerate}
+
+\newpage
+\paragraph{How to choose the parameters?}\hfill\\
+Start by choosing \texttt{minPts}=k, then $\forall$ point we compute the distance with the k-th 
+neighbour and we order them based on their distance with respect to their k-neighbour and we plot
+them on the \textit{k-distance curve} \textcolor{gray}{(like projecting them on the dimension
+of k-neighbour distance)}. In this plot, we indetify the "knee" in which the cluster switch from 
+being dense to being sparse, and we take that point as \texttt{eps}.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{clustering/density/kdistance_curve.png}
+\end{figure}
+
+If we don't have an idea of the \texttt{minPts} to start with, we could try to recompute the 
+k-distance changing the k, and choosing that based on how good is the plot.
+
+\vspace{1cm}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{clustering/density/desnity_vs_kmeans.png}
+    \caption{Comparison between k-means and DBSCAN. We could see that fore complex-shaped data
+    DBSCAN performs better.}
+\end{figure}
+
+\paragraph{Pros \& Cons}\hfill\\
+\begin{itemize}
+    \item[\textcolor{green}{$\bullet$}] doesn't require to fix prior the number of clusters
+    \item[\textcolor{green}{$\bullet$}] works well with arbitrary-shaped clusters
+    \item[\textcolor{green}{$\bullet$}] very robust to outliners and noise
+
+    \item[\textcolor{red}{$\bullet$}] struggles dealing with cluster having \diff densities
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.5\textwidth]{clustering/density/sensitivity_density.png}
+    \end{figure}
+    \newpage
+    \item[\textcolor{red}{$\bullet$}] difficult to choose the right \texttt{eps} (from the image we 
+    can see that by changing it some points might be classified as noise)
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.4\textwidth]{clustering/density/sensitivity_eps.png}
+    \end{figure}
+    \item[\textcolor{red}{$\bullet$}] border-points that are close to more than one core-point 
+    might be linked to one of them \arrow non-deterministic
+\end{itemize}
+
+\vspace{0.5cm}
+%---------------------------------------------------------------------------------------------------
+\subsection{Probabilistic clustering, mixture models}
+Allows to be more flexible on the assignment of datapoints to clusters. We model each cluster as a 
+\textit{component} that has assigns to each datapoint the relative membership probability.\\
+But why do we need this? All the methods shown before don't tell you their level of uncertanty
+of placing the point into the clusters. 
+
+\paragraph{Mixture model}\hfill\\
+It's a probability model $p(c)$ which relies on describing the probability using data taking into
+account more sources, each one of them uses a different probability distribution $f_k(x;\theta_k)$
+with some parameters set $\theta_k$ and is accounted in the gloabal model with some weight $w_k$. \\
+The weight tells how much is probable that point is generated starting from that model.
+The indelying idea is to \textit{describe the population as a blend of $K$ \diff pupolations}. \\
+For each cluster we have a component, which is a \diff source/subpopulation ecc. ecc.
+
+% should blend the description
+\begin{equation*}
+    p(x) = \sum_{k=1}^K w_kf_k(x;\theta_k)
+\end{equation*}
+\hfill \\
+In the course we wil focus on the \textbf{Gaussian Mixture Model (GGM)}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{clustering/prob/gmm.png}
+\end{figure}
+\begin{equation*}
+    p(x) = \sum_{k=1}^K \pi_k \mathcal{N}(x|\mu_k,\Sigma_k)
+\end{equation*}
+where $\mu_k$:= subpopulation center, $\Sigma_k$:= subpopulation "shape" (how much and in which
+direction is shaped) and $\pi_k$:= how common the subpopulation is (in other words).
+\vspace{0.5cm}
+
+We start by adding \textit{latent variables} $Z\in \{1\dots K\}$ which are some non-observable
+variables indicating which component/custer generates my datapoints. First we draw some preliminary 
+shape for the components $\mathbb{P}(Z=k)=\pi_k$ \textcolor{gray}{(in other words, means giving
+some probabiity to the whole cluster)}.
+Once fixed the parameters, we try to figure out \textit{given some point $x_i$ what's the 
+probablity it came from component $k$?}
+\begin{equation*}
+    \gamma_{ik} = \prob(Z_i=k|x_i,\theta) = \cfrac{\pi_k \mathcal{N}(x_i|\mu_k,\Sigma_k)}
+    {\sum_{j=1}^K\pi_k \mathcal{N}(x_i|\mu_k,\Sigma_k)}
+\end{equation*}
+where $\gamma_{ik}$ := \textbf{responsibilities} \textcolor{gray}{(how much the cluster is 
+responsible for the creating the point)} is the metric that allows for \textbf{soft clustering}.
+This is very useful when custers overlap.
+
+If you want to go back at \textbf{hard clustering} you can take $\hat{z}_i=\arg \max_k\gamma_{ik}$.
+As in \textit{k-means} in \textit{GMM} we have to choose in advance the \# of clusters, however
+thanks to soft clustering this prior choice has less impact on the final outcome.
+This type of algorithm suffers in scalability (you have to tune all then parameters which are not
+hyperparameters), however it gives us a lot of information about the data.
+
+\subsubsection{Estimation-Maximization (EM) algorithm}
+How do we estimate the model paramters? \arrow our goal is to maximze the log-likelihood 
+$\ell(\theta)$, and we can do that by using EM-algorithm.
+\begin{equation*}
+    \ell(\theta) = \sum_{i=1}^{n} \log \left( \sum_{k=1}^{K} \pi_k \mathcal{N}(x_i \mid \mu_k, 
+    \Sigma_k) \right)
+\end{equation*}
+
+The \textbf{EM-algorithm} works as follows:
+\begin{enumerate}
+    \item start by randomizing the model parameters $\theta^{(0)}$
+    \item \textbf{Expectation step (E-step)}: given the actual parameters $\theta^{(t)}$, compute 
+    the responsibilities $\gamma_{ik}^{(t)}$ \arrow the idea is to use the actual best-guess 
+    parameters to softly-assign each point to the clusters
+    \item \textbf{Maximization step (M-step)}: given the actual datapoint-cluster assignment 
+    $\gamma_{ik}^{(t)}$, re-estimate the parameters $\theta^{(t)}$ \arrow for each cluster $k$:
+    \begin{itemize}
+        \item count (soft-count) the number of points in the cluster: $N_k^{(t)}=\sum_{i=1}^n
+        \gamma_{ik}^{(t)}$
+        \item compute the new "popularity" of my cluster: $\pi_k^{(t)}=\frac{n_k^{(t)}}{n}$
+        \item compute the new cluster mean: $\mu_k^{(t+1)} = \frac{1}{N_k^{(t)}} \sum_{i=1}^{n} 
+        \gamma_{ik}^{(t)} x_i$
+        \item computer the new cluster covariance: $\Sigma_k^{(t+1)} = \frac{1}{N_k^{(t)}} \sum_
+        {i=1}^{n} \gamma_{ik}^{(t)} (x_i - \mu_k^{(t+1)})(x_i - \mu_k^{(t+1)})^T$
+    \end{itemize}
+\end{enumerate}
+So we basically try to do the assignment, update the structure of the cluster with the new 
+assignments and so go on.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{clustering/prob/em_example.png}
+\end{figure}
+
+This algorithm is iterative; these two steps are repetaed until convergence on $\ell(\theta)$ or
+up to a certain \# of iters. One cool thing of \textit{EM-algorithm} is that is designed so The
+value will never descrease \arrow coverges toward to a local optimum (might get stuck in locals)
+
+\subsubsection{Pros \& Cons}\hfill\\
+\begin{itemize}
+    \item[\textcolor{green}{$\bullet$}] unlike \textit{k-means}, this can adapt to many data shapes
+    \item[\textcolor{green}{$\bullet$}] can adapt to cluster with varying sizes
+    \item[\textcolor{green}{$\bullet$}] soft assignments are more informative to understood the 
+    data than hard assignments 
+    \item[\textcolor{green}{$\bullet$}] can deal with overlapping clusters
+    \item[\textcolor{green}{$\bullet$}] can be used for desnity estimation and anomaly detection
+    
+    \item[\textcolor{red}{$\bullet$}] \# of cluster must be defined in advance
+    \item[\textcolor{red}{$\bullet$}] Gaussian distribution might not be always the best choice 
+    \textcolor{gray}{(just change the distribution)}
+    \item[\textcolor{red}{$\bullet$}] might not work properly on small dataset
+    \item[\textcolor{red}{$\bullet$}] initial choice of parameters might change the results
+    \item[\textcolor{red}{$\bullet$}] \textit{EM-algorithm} might get stuck in local optimum and
+    its convergence might be slow
+    \item[\textcolor{red}{$\bullet$}] badly-conditioned covariance matrices (like almost singular) 
+    might cause numeric instability
+    \item[\textcolor{red}{$\bullet$}] computationally expensive
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{clustering/prob/gmm_comparison.png}
+\end{figure}
+
+\paragraph{Note: covariance matrix assumptions}\hfill\\
+We can also simplify the covarance matrix to reduce the number of parameters
+% take the recording
+
+\vspace{0.5cm}
 %-----------------------------------------------------------------------------------------
 \subsection{Evaluating cluster quality}
 How do we eavulate if our clusters make sense if we don't have an output reference?
@@ -233,7 +451,7 @@ doesn't decreases a too much.\\
 With this method we're also looking at how similar points within the same cluster are, 
 without considering the other goal of clustering: distance between \diff clusters.
 
-\paragraph{Solhouette Score}
+\subsection{Silhouette Score}
 This metrics takes into account both the distance between points in the same cluster and
 the distance from other cluster's points.
 
