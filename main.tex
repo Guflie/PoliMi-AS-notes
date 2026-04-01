@@ -26,6 +26,7 @@
 \usepackage{caption} % to extend caption's length
 
 \usepackage{silence} % to silence overflow warnings
+\usepackage{sectsty}
 
 % ========== PERSNALIZED COMMANDS ==============================================
 \newcommand{\expect}{\mathbb{E}}
@@ -35,6 +36,15 @@
 \newcommand{\diff}{$\neq$\xspace}
 \newcommand{\arrow}{$\rightarrow$\xspace}
 \newcommand{\seps}{$\varepsilon$\xspace}
+
+% ========== PERSNALIZED EASTETIC ==============================================
+\definecolor{sec-color}{RGB}{255, 133, 51}
+\sectionfont{\color{sec-color}}
+\definecolor{subsec-color}{RGB}{51, 102, 255}
+\subsectionfont{\color{subsec-color}}
+\definecolor{subsubsec-color}{RGB}{102, 179, 255}
+\subsubsectionfont{\color{subsubsec-color}}
+
 
 % ========== HEADER ============================================================
 \title{062102 - Applied Statistics}

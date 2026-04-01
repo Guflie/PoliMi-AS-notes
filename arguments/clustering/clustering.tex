@@ -225,7 +225,7 @@ of low-desnity points. This method, not being based on distances, is very useful
 distributed following strange shapes. We also don't need to specify the number of clusters 
 in advance.
 
-\paragraph{Density-Based Spatial Clustering of Applications with Noise (DBSCAN)} \hfill \\
+\subsubsection{Density-Based Spatial Clustering of Applications with Noise (DBSCAN)} \hfill \\
 This method is able to find arbitrary shaped cluster without prefixed total number, also in 
 presence of noise. We can tune using two parameters:
 \begin{itemize}
@@ -425,7 +425,7 @@ value will never descrease \arrow coverges toward to a local optimum (might get 
 \end{itemize}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.4\textwidth]{clustering/prob/gmm_comparison.png}
+    \includegraphics[width=0.6\textwidth]{clustering/prob/gmm_comparison.png}
 \end{figure}
 
 \paragraph{Note: covariance matrix assumptions}\hfill\\
@@ -504,5 +504,5 @@ each model we have:
 \begin{equation*}
     BIC = k\ \log(n) -2\ell(\hat{\theta})
 \end{equation*}
-Same as \texit{AIC}, it penalizes model complexity and rewards high likelihood, but now the
+Same as \textit{AIC}, it penalizes model complexity and rewards high likelihood, but now the
 penalization becomes stronger as the sample size increases.
