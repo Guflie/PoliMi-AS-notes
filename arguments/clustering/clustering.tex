@@ -429,8 +429,20 @@ value will never descrease \arrow coverges toward to a local optimum (might get 
 \end{figure}
 
 \paragraph{Note: covariance matrix assumptions}\hfill\\
-We can also simplify the covarance matrix to reduce the number of parameters
-% take the recording
+We can also simplify the covarance matrix to reduce the number of parameters and therefore the
+computaiton expenses (a lot of standards tools allow you to tune it).
+Many commons choices are:
+\begin{itemize}
+    \item \textbf{Diagonal}: we are basically considering only the variance of the features, 
+    assuming that the features are uncorrelated
+    \item \textbf{Spherical}: we consider all variance and covariance having the same value 
+    \textcolor{gray}{(the features vart w.r.t. as much as they vary by themself)}
+    \item \textbf{full}: standard case, considering all
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{clustering/prob/variance_simpl_comparison.png}
+\end{figure}
 
 \vspace{0.5cm}
 %-----------------------------------------------------------------------------------------
@@ -467,3 +479,30 @@ the distance from other cluster's points.
     \item get the \textbf{Silhouette score for overhall clustering}: $sil(C)=\cfrac{1}{K}
     \sum_{k=1}^K sil(C_k)$
 \end{enumerate}
+
+\subsection{Model-based clustering quality}
+We try to exploit the model-structure (like in \textit{probabilistic clustering}) to evaulate out 
+clusterr output. We have some models $M_1\dots M_R$ fitting the dataset $x_1\dots x_n$, and for
+each model we have:
+\begin{itemize}
+    \item $\hat{\theta}$ MLE paramters
+    \item $\ell(\hat{\theta})$ maximized log-likelihood
+    \item $k$ number of free parameters in the model
+\end{itemize}
+
+\subsubsection{Akaike Information Criterion (AIC)}
+\begin{equation*}
+    AIC = 2k -2\ell(\hat{\theta})
+\end{equation*}
+\begin{itemize}
+    \item $2k$ penalizes complexity (more parameters)
+    \item $-\ell(\hat{\theta})$ rewards highly likelihood models (minimize information loss)
+\end{itemize}
+\arrow for each model compute the AIC and choose the smallest one.
+
+\subsubsection{Bayes Information Criterion (BIC)}
+\begin{equation*}
+    BIC = k\ \log(n) -2\ell(\hat{\theta})
+\end{equation*}
+Same as \texit{AIC}, it penalizes model complexity and rewards high likelihood, but now the
+penalization becomes stronger as the sample size increases.
