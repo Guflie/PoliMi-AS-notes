@@ -1,0 +1,302 @@
+\section{Simple linear regression}
+Now we switch focus on deriving/predicting the value of some feature given the values of others.
+Taking this example on \textit{Exam score Vs Study hours}, what if we'd like to predict the score
+of the next person who studies 5 hours per week?
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{linearmodel/lm_example.png}
+\end{figure}
+
+Obviously I take the mean of the score samples in that study hour for that amount of studyin hours, 
+and I can do the same for the other set of points. We can see there is a linear model between the 
+study hours and the mean of the exam score mean: $\mathbb{E}[score|study\ hours] = f(study\ hours)$.
+\vspace{0.2cm}
+
+So we want to create a model to shape this relation:
+$X$ := independent/predictor variable (usually known)
+$Y$ := dependent/response variable \arrow it's a random variable (due \seps)
+\seps := random deviation/error \arrow it's a random variable
+\begin{equation*}
+    [Y|X]=\beta_0+\beta_1X+\varepsilon
+\end{equation*}
+where $\beta_0,\beta_1,\sigma^2$ are parameters and we \textbf{assume} that $\mathbb{\varepsilon}=0$
+,$\mathbb{V[\varepsilon]}=\sigma^2$ and that's simmetrically distributed. 
+
+Interpretation of the parameters:
+\begin{itemize}
+    \item \textbf{intercept} $\beta_0$: "height"/base-line of the model, where the line intercept 0
+    \item \textbf{slope} $\beta_1$: how much my model increases for unit increment of the 
+    predictor $x$ \textcolor{gray}{(by studying 1 hour more, I will improve my score by $beta_1$)}
+    \item $\sigma^2$: how much our data is spread along its mean
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/lm_param_interpretation.png}
+\end{figure}
+
+Let's start with the assumptions on the errors: we assume that the spread of our model for each 
+predictor value is the same (homoscedasticity) and that $\varepsilon ~\mathcal{N}(0,\sigma^2)$.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/err_assumption.png}
+\end{figure}
+
+\subsection{Model estimation}
+The model paramters are not usually known, so how do we estimate them from set of samples $(x_1,y_1
+\dots (x_n,y_n))$?\\
+We assume $y_i = \beta0 +\beta_1 x_i +\varepsilon_i,\ \varepsilon_i~\mathcal{N}(0,\sigma^2)
+\rightarrow y_i|x_i~\mathcal{N}(\beta_0+\beta_1 x_i, \sigma^2)$\\
+and we chose paramters that minimize the squared error:
+\begin{equation*}
+    \hat{\beta}_0,\hat{\beta}_1 = \arg\min_{\beta}\sum_i\varepsilon_i^2=\sum_i\left(y_i-(\beta_0+
+    \beta_1 x_i)^2\right)
+\end{equation*}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/square_error_visualized.png}
+\end{figure}
+
+
+(you can skip all the computations)
+$$
+\begin{cases}
+    \frac{\partial}{\partial \beta_0} \sum_{i} (y_i - [\beta_0 + \beta_1 x_i])^2 = -2 \sum_{i} (y_i - \beta_0 - \beta_1 x_i) = 0 \\
+    \frac{\partial}{\partial \beta_1} \sum_{i} (y_i - [\beta_0 + \beta_1 x_i])^2 = -2 \sum_{i} x_i (y_i - \beta_0 - \beta_1 x_i) = 0
+\end{cases} \implies
+$$ $$
+\begin{cases}
+    \sum_{i} y_i = n\beta_0 + \beta_1 \sum_{i} x_i \\
+    \sum_{i} y_i x_i - \beta_0 \sum_{i} x_i - \beta_1 \sum_{i} x_i^2 = 0
+\end{cases} \implies
+$$ $$
+\begin{cases}
+\bar{y} = \beta_0 + \beta_1 \bar{x} \\
+\sum_{i} x_i^2 \beta_1 = \sum_{i} y_i x_i - (\bar{y} - \beta_1 \bar{x}) \sum_{i} x_i
+\end{cases} \implies
+$$ $$
+\begin{cases}
+    \bar{y} = \beta_0 + \beta_1 \bar{x} \\
+    \beta_1 \left( \sum_{i} x_i^2 - \frac{(\sum_{i} x_i)^2}{n} \right) = \sum_{i} x_i y_i - \frac{\sum_{i} x_i \sum_{i} y_i}{n}
+\end{cases} \implies
+$$ $$
+\begin{cases}
+    \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x} \\
+\hat{\beta}_1 = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}
+\end{cases}
+$$
+
+Even if it looks like PCA, now we're not minimizing the distance of the line from the point
+\textcolor{gray}{(is not even a distance, is not orthogonal)} but just computing the error 
+between the model and the actual data. 
+
+\subsection{Model assesment}
+After estimating our model, we'd like to check the goodnes of it.\\
+To do so, first we compute the variance of out estimations $\hat{\beta}_0,\hat{\beta}_1$ and then we
+us it to build some confidence interval CI.
+
+$$
+\begin{cases}
+Var(\hat{\beta}_0) = \sigma^2 \left[ \frac{1}{n} + \cfrac{\bar{x}^2}{\sum_{i=1}^n (x_i - \bar{x})^2} \right] \\
+Var(\hat{\beta}_1) = \cfrac{\sigma^2}{\sum_{i=1}^n (x_i - \bar{x})^2}
+\end{cases} \implies
+\begin{cases}
+\hat{\beta}_0 \sim \mathcal{N}(\beta_0, Var(\hat{\beta}_0)) \\
+\hat{\beta}_1 \sim \mathcal{N}(\beta_1, Var(\hat{\beta}_1))
+\end{cases}
+$$
+with an $\alpha$\% CI $\hat{\beta_i}\pm t_{n-2,1-\alpha/2}\sqrt{Var(\hat{\beta}_i)}$
+
+One particular thing to see if the computed CI contains zero: if it does, there might the 
+possibility that $Y$ and $X$ are not really dependent \arrow if te CI is just above zero is fine.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{linearmodel/lm_param_CI.png}
+\end{figure}
+
+
+We could also approach the problem from another perspective using test: we'd like to quantify how 
+much we are sure that the estimate won't be zero.
+\begin{centering}
+    $H_0: \beta_i=0$ vs $H_1: \beta_i\ne0$
+\end{centering}
+as statistic we use
+\begin{equation*}
+    t_i = \cfrac{\hat{\beta_i}}{SE(\hat{\beta_i}) = \sqrt{Var(\hat{\beta_i})}}\sim t_{n-2}
+\end{equation*}
+the statistic is the value/its disperion.
+If we get small t p-value under the hypo that the coefficient is zero, it means that I'm seeing
+something very unlikely\arrow I have evidence that the coefficient is not 0. 
+
+
+\subsubsection{Variability explained}
+After the parameter estimation, we can compute the \textbf{residuals} $\hat{e}$ := difference 
+between our model and the real output.
+$$
+\begin{aligned}
+\hat{y}_i &\to \hat{\beta}_0 + \hat{\beta}_1 x_i + e_i \\
+y_i &\to \beta_0 + \beta_1 x_i + \epsilon_i
+\end{aligned}
+\implies e_i \neq \epsilon_i
+$$
+
+\begin{figure}[h]
+    \includegraphics[width=0.4\textwidth]{linearmodel/var_explained.png}
+\end{figure}
+
+% adjust thie later
+\begin{comment}
+\begin{minipage}{0.9\textwidth}
+    \begin{wrapfigure}{l}{0.3\textwidth}
+        \includegraphics{linearmodel/var_explained.png}
+    \end{wrapfigure}
+    
+\end{minipage}
+\end{comment}
+
+
+$$
+\begin{aligned}
+    &\sum_{i=1}^{n} \color[RGB]{218, 142, 54} (y_i - \bar{y})^2 \color{black}= \sum_{i=1}^{n} \color[RGB]{91, 155, 68} (\hat{y}_i - \bar{y})^2 \color{black}+ \sum_{i=1}^{n} \color[RGB]{48, 107, 172} (y_i - \hat{y}_i)^2 \\
+    \\
+    &\begin{matrix}
+\color[RGB]{218, 142, 54} \mathbf{TSS} \\
+\color[RGB]{218, 142, 54} \text{Total Sum of} \\
+\color[RGB]{218, 142, 54} \text{Squares}
+\end{matrix}
+\color{black}=
+\begin{matrix}
+\color[RGB]{91, 155, 68} \mathbf{ESS} \\
+\color[RGB]{91, 155, 68} \text{Explained Sum} \\
+\color[RGB]{91, 155, 68} \text{of Squares}
+\end{matrix}
+\color{black}+
+\begin{matrix}
+\color[RGB]{48, 107, 172} \mathbf{RSS} \\
+\color[RGB]{48, 107, 172} \text{Residual Sum of} \\
+\color[RGB]{48, 107, 172} \text{Squares}
+\end{matrix}
+\end{aligned}
+$$
+\begin{description}
+    \item[\textcolor{orange}{TSS}]\arrow total variability of the data, is the biggest mistake we
+    can make during prediction
+    \item[\textcolor{green}{ESS}]\arrow improvement of the model with respect to teh simplest 
+    prediction ($\bar{y}$), is the amount of variability captured by our model
+    \item[\textcolor{blue}{RSS}]\arrow difference between our model and the real data (error model),
+    is the amount of variability we couldn0t capture
+\end{description}
+% put it down as a comment
+If we don't know any model, the only reasonable way to estimate $Y$ is to use $\bar{y}$.
+\hfill\\
+So to evaluate our model we could measure "the \% of variability we capute with our model":
+\begin{equation*}
+    R^2 = \frac{\textcolor{green}{ESS}}{\textcolor{orange}{TSS}} = 
+    1 - \frac{\textcolor{blue}{RSS}}{\textcolor{orange}{TSS}}
+\end{equation*}
+We can also used and \textit{adjusted version} that penalizes more complex models, making the add 
+of a new variable more "ponderato":
+\begin{equation*}
+    R^2_{adj} = 1-\cfrac{\textcolor{blue}{RRS}/(n-p)}{\textcolor{orange}{TSS}/(n-1)}
+\end{equation*}
+
+
+\subsubsection{Residual variability/predicion error}
+We could also try to asses the variability of the prediction. To do so, there are several options:
+\begin{description}
+    \item[Residual Standard Error (RSE)] 
+    \begin{equation*}
+        \hat{\sigma}^2=\cfrac{RSS}{n-p}
+    \end{equation*}
+    Gives a range on which the prediction could be.
+    
+    \item[Root mean squared error (RMSE)]
+    \begin{equation*}
+        RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}
+    \end{equation*}
+    Average prediction error magnitude (higher emphasys on larger mistakes).    
+
+    \item[Mean Absolute Error (MAE)] 
+    \begin{equation*}
+        MAE = \frac{1}{n}\sum_{i=1}^{n}|y_i-\hat{y}_i|
+    \end{equation*}
+    More or less like RMSE, but without the extra emphasys on large mistakes.
+\end{description}
+
+
+\subsubsection{Model usefullness}
+We could try to evaluate how useful is our model in explaining the relationship between response
+and predictor: our model is useful if $\beta_1\ne 0$ (captures the relationship) and the more
+variability is able to caputure, the better is \arrow we use a \textbf{F-test}.
+\begin{equation*}
+    H_0:\beta_1 = 0 \rightarrow F=\cfrac{ESS/(p-1)}{RSS/(n-p)}\sim F_{(p-1)(n-p)}
+\end{equation*}
+Giving it an intepretation, if we consider:
+\begin{itemize}
+    \item $ESS/(p-1)$ as the avrage explained variability per parameter
+    \item $RSS/(n-p)$ as the avrage unexplained variability per residual degree of freedom
+\end{itemize}
+We get that \textit{$F$ compares the "signal per parameter" with the "noise per degree of freedom"}.
+If the statistic is low, then there are evidence against the null hypo.
+
+
+Note that in the linear model, the F-test $\equiv$ t-test, so we get the same result.
+
+
+\subsection{Inference on Y}
+Since we could do only an estimation of the parameters (the fitted line is uncertain), instead of 
+point-level prediction we should use intervals to predict our response.
+
+\subsubsection{CI for the mean response}
+The problem we're going to answer is in the form "what's the avgexam score of students who study 
+$x_0$ hours?" \arrow we want to estimate $\mu_{Y|X=x_0}=\mathbb{E}[Y|X=x_0]$ and to do so we use 
+CI.
+
+% improve it laters
+\begin{comment}
+\begin{minipage}{0.9\textwidth}
+    \begin{wrapfigure}{l}{0.3\textwidth}
+        \includegraphics[width=0.9\linewidth]{linearmodel/CI_mean.png}
+    \end{wrapfigure}
+    \begin{equation*}
+        \hat{y}_0 \pm t_{n-2,1-\alpha/2}\hat{\sigma}\sqrt{\frac{1}{n}+\cfrac{(x_0-\bar{x})^2}
+        {\sum_{i=1}^n(x_0-\bar{x})^2}}
+    \end{equation*}
+\end{minipage}
+\end{comment}
+\begin{equation*}
+    \hat{y}_0 \pm t_{n-2,1-\alpha/2}\ \hat{\sigma}\sqrt{\frac{1}{n}+\cfrac{(x_0-\bar{x})^2}
+    {\sum_{i=1}^n(x_0-\bar{x})^2}}
+\end{equation*}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/CI_mean.png}
+\end{figure}
+
+we could see the interval is narrowest near $x_0=\bar{x}$, expressing how as we move away from the 
+mean as our uncertanty increases.
+
+\subsubsection{Prediction interval}
+Now we wanto to tackle the problem "if one student studies $x_0$ hours, what range of scores it
+could hope for?"\arrow we want to estimate $Y_{new}|X=x_0$, now we have the uncertanty due 
+parameters estimation (as before) + the irreducible noise around the mean \seps.
+\begin{equation*}
+    \hat{y}_0 \pm t_{n-2,1-\alpha/2}\ \hat{\sigma}\sqrt{1+\frac{1}{n}+\cfrac{(x_0-\bar{x})^2}
+    {\sum_{i=1}^n(x_0-\bar{x})^2}}
+\end{equation*}
+
+
+\subsubsection{Comparisons CI vs PI}
+\begin{description}
+    \item[CI] show the uncertanty of the population parameter, and the interval becomes larger as
+    the sample std deviation does (this could be balanced by a larger sample size)
+    \item[PI] focuses the uncertanty on some \textit{specific} value, thus the resulting interval
+    is much wider compared to the CI
+\end{description}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{linearmodel/lm_CI_vs_PI.png}
+\end{figure}
+
+
+
