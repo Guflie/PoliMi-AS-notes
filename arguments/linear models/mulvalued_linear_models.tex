@@ -1,0 +1,271 @@
+\section{Multivalued linear models}
+Simple linear regression models could be exended using multiple predictors too: we switch
+from a mean response that is a line to something forming a hyperplane in $\mathbb{R}^{p+1}$ (with 
+$p$ predictors): $\mathbb{E}[Y|X_1=x_1,X_2=x_2]=\beta_0+\beta_1x_1+\beta_2x_2$.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/mlm/mlm_example.png}
+\end{figure}
+Giving an intepretation to the parameters, we have that
+\begin{itemize}
+    \item $\beta_1$ is the change in mean of $Y$ for the unitary increment of $X_1$, keeping $X_2$
+    fixed
+    \item $\beta_2$ is the change in mean of $Y$ for the unitary increment of $X_2$, keeping $X_1$
+    fixed    
+\end{itemize}
+So each parameter can stil be intepreted as slopes, but slopes of a plane viewed from \diff angles.
+This interpretation is conditional w.r.t. other paramters, not marginal.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/mlm/mlm_slope_intepret.png}
+\end{figure}
+
+This allows to adjust for cofounding (see more later).
+
+So in general we have predictors $x_i\in\real^p$, responses $y_i\in\real$ and noise \seps with the
+assumptions $\mathcal{E}[\varepsilon|X]=0, \varepsilon\sim\mathcal{N}(0,\sigma^2I_n)$ \arrow using
+the matrix formulation $Y=\beta^TX+\varepsilon$.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/mlm/matrix_not_mlm.png}
+\end{figure}
+
+To estimate the parameters we minimize the \textbf{Ordinary Least Squares}:
+$$
+    \hat{\beta} = \arg\min_{\beta\in\real^p} RSS(\beta) = \sum_{i=1}^n (y_i-x_i^T\beta)^2 = \left\|
+    \mathbf{y}-\mathbf{X}\beta\right\|_2^2
+$$
+To do so we take the differentiat w.r.t. the parameters:
+$$
+    \frac{\partial}{\partial\beta} \|y-X\beta\|_2^2 = -sX^T(y-X\beta)=0 \Rightarrow \hat{\beta} = 
+    (X^TX)^{-1}X^Ty
+$$
+
+\subsection{Model assesment}
+Under the \textit{Gaussian noise} assumption we have $\hat{\beta}\sim \mathcal{N}(\beta,\sigma^2(X^T
+X)^{-1})$, giving us an estimator:
+\begin{itemize}
+    \item \textbf{unbiased} $\mathbb{E}[\hat{\beta}|X]=\beta$
+    \item with \textbf{covariance} $Var(\hat{\beta}|X)=\sigma^2(X^TX)^{-1}$
+    \item with \textbf{variance} $\hat{\sigma}^2=\cfrac{RSS}{n-p}$ (w.r.t simple linear regression, 
+    now we have less degree of freedom)
+\end{itemize}
+As for the simple linar regression, we could asses the model using the same tools:
+\begin{itemize}
+    \item std error $\text{SE}(\hat{\beta}_j) = \sqrt{\hat{\sigma}^2 [(X^\top X)^{-1}]_{jj}}$
+    \item t-test for one parameter $H_0: \beta_j = 0, \quad t = \frac{\hat{\beta}_j}{\text{SE}
+    (\hat{\beta}_j)}$
+    \item confidence interval $\hat{\beta}_j \pm t_{n-p, 1-\alpha/2} \text{SE}(\hat{\beta}_j)$
+\end{itemize}
+Remeber that all the assesment are considered holding the other parameters fixed.
+
+\subsubsection{Variability explained}
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{linearmodel/mlm/mlm_var_explained.png}
+    \caption*{As we could see, the concept and metrics remain the same as for simple linear 
+    regression.}
+\end{figure}
+
+\subsubsection{Model usefulness}
+The concept is the same as for simple linear regression: the usefulness is measured in term of how
+much our model links the predictors and the responses:
+\begin{center}
+    $H_0:\beta_0=\beta_1=\dots\beta_{p-1}$ vs $H_1: \exists i:\beta_i\ne 0$ \\
+    $$
+        F= \cfrac{ESS/(p-1)}{RSS/(n-p)} \sim F_{p-1,n-p}
+    $$
+\end{center}
+Now w.r.t. simple linear regression the F-test is no more equivalent to the t-test due the fact of 
+testing many parameters jointly.
+
+We could think also to test a reduced set of parameter $p_{red}$ called \textbf{nested model}: to 
+compare the reduced model with the full model
+\begin{center}
+    $F= \cfrac{(RSS_{full}-RSS_{red})/q}{RSS_{full}/(n-p_{full})} \sim F_{q,n-p_{full}}$ with 
+    $q=p_{full}-p_{red}$
+\end{center}
+
+\subsection{Multicollinearity}
+The main issue with real data is that \textit{predictors are not independent}: we have 
+\textbf{multicollinearity} which means that one predictor is highily predictable from the others.
+We might have \textbf{perfect collinearity} when the relationship is linear or \textbf{near 
+collinearity} when the combination is almost linear (highly corrleted features).
+
+The multicollinearity problem is not something bad in general, but means that the predictors are
+redundant, with all the unpleasant implications.\\
+\hfill \\
+
+Looking at the OLS estimator $\hat{\beta}=(x^TX)^{-1}X^Ty$, it requires $X^TX$ to be invertible
+\\ \arrow if there is multicollinearity within the matrix there are linearly dependent columns
+making the matrix non-invertible
+\\ \arrow if $Xv=0$ then $X(\beta+v)=X\beta$ giving us infinite fitted values
+\\ When the data can't distinguish between $\beta$ from $\beta+v$ is said we hae 
+\textbf{ill-posedness}. How do we solve the issue? Drop a variable
+\\
+\hfill\\
+If the predictors are \textit{near-collinear} we have that $X^TX$ is invertible but it's 
+\textbf{ill-conditioned}: the inverse exists but it's numerically unstable, as we can see in the 
+variance $Var(\hat{\beta}|X)=\sigma^2 (X^TX)^{-1}$ \arrow this lead to large std error, wide 
+confidence intervals ...\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{linearmodel/mlm/var_inflation.png}
+\end{figure}
+\vspace{0.5cm}
+
+However, we could have fitted values $\hat{y}=X\hat{\beta}$ pretty stable even with unstable params 
+\arrow multicollinearity is much worse for intepretation/inference than for prediction (almost ever)
+
+\paragraph{Variance Inflation Factor (VIF)}
+This factor tells us how much the other predictors can explain the other ones.
+% watch the recording
+
+\subsubsection{How to deal with multicollinearity}
+\begin{itemize}
+    \item remove redundant variables
+    \item merge correlated predictors into one, changing it's interpretability
+    \item collect more data, hoping that more variation might reduce colllinearity
+    \item regularize (see later)
+    \item apply PCA \arrow PCA regression (making the features othogonal by default)
+\end{itemize}
+
+\subsection{Model assumptions checks}
+Up to now we've made some assumptions on the error: $\mathcal{E}[\varepsilon|X]=0, Var(\varepsilon|
+X)=\sigma^2, Cov(\varepsilon_i,\varepsilon_j|X)=0$ and on other aspects  of the model, but what if
+this assumption doesn't hold?
+
+\paragraph{Model linearity}
+\begin{center}
+    \textit{The model is linear in the coefficients} $\mathbb{E}[Y_i|X]=\beta_0+\beta_1x_{i1}
+    +\beta_2x_{i2}$
+\end{center}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/mlm/lin_assumption.png}
+\end{figure}
+This doesn't mean that the predictors have to be linear, only the combination of predictors and 
+parameters must be linear.
+
+\paragraph{Null error mean}
+\begin{center}
+    $\expect[\varepsilon_i|X]=0$
+\end{center}
+means that there is no leftover information in the error and makes the errors no correlated with 
+the included predictors.\\
+If this this assumption doesn't hold, we might have: variable bias, measurement errors in
+predictors, bad model structure.
+
+\paragraph{Homoscdasticity of residuals}
+\begin{center}
+    \textit{The error variance should be constant} $Var(\varepsilon_i|X)=\sigma^2$
+\end{center} 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/mlm/homo_residual.png}
+\end{figure}
+This means that the error spread should be roughly the same across the fitted values. If not, the 
+OLS are still unbiased but the std may be wrong\arrow t-tests and CI might be misleading.
+
+\paragraph{Independence of errors}
+\begin{center}
+    \textit{Errors are independent} $Cov(\varepsilon_i,\varepsilon_j|X)=0\ \forall i\ne j$
+\end{center}
+If errors are correlated we get distorted std errors, inference might be wrong and the actual 
+information is less than the sample size.\\
+This kind of assumption often falls in a lot of realistic scenarios (time series, repeated
+measures ...).
+
+\paragraph{Independence of errors}
+\begin{center}
+    $\varepsilon_i \sim \mathcal{N(0,\sigma^2)}$
+\end{center}
+This assumption is not required for the OSL estimator rather than the simplycity of having
+exact t-test, exact F-test, exact CI and exact PI. Also for larger samples mild deviations from
+normal distribution are not problematic due CLT asymptotic result. 
+
+\subsubsection{Leverage, outliers and influential points}
+
+\paragraph{Leverage points}\hfill\\
+In the observation space, fitted values satisfy $\hat{y}=Hy=X(X^TX)^{-1}X^T$ where $H$:= \textit{
+textmatrix} \arrow $h_{ii}$ gives the \textbf{leverage} of the observations := how unsual the 
+observation is in the predictor space. Look that the leverage depends only on $X$, not on $Y$.
+\\ high leverage \arrow unusual combination
+\\ low leverage \arrow typical observation
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/mlm/leverage_point.png}
+\end{figure}
+High-leverage points following the regression model doesn't distort the model (they follow the 
+exploited model) but due them the regression line is now strongly supported for extreme $x$, 
+reducing the uncertanty in that region even if the information about it is not so much, making CIs 
+artificially tighter\arrow gives a false sense of generalization.
+
+\paragraph{Ouliers}\hfill\\
+Outliers are those observations that are unusual in the response, characterized by large residual
+values $e_i=y_i-\hat{y}_i$. This can cause the increase of RSS, inflate the estimated noise level,
+distort std error (with consequences on test and CI).
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/mlm/outlier.png}
+\end{figure}
+Another thing is that this type of point might suggest possible data issues or model specification.
+
+\paragraph{Influential points}\hfill\\
+\begin{center}
+    high leverage + large residual \arrow influential point
+\end{center}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{linearmodel/mlm/influential_point.png}
+\end{figure}
+This type of points might have big influence on the model, causing changes in the estimation of the
+coefficients, distort predictions and inference.
+
+\subsubsection{Residual vs fitted diagnostic plots}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{linearmodel/mlm/resisual_vs_fitted_plot.png}
+\end{figure}
+Useful to check linearity of the mean, homoscedacity and possible outliers/leverage points.\\
+\textcolor{green}{Good pattern}: andom cloud centered around zero, without visible structure.\\
+\textcolor{red}{Bad pattern}: curved pattern (suggests nonlinearity), funnel shape (suggests 
+heteroscedasticity), isolated points (possible outliers)\\
+
+\subsubsection{Q-Q diagnostic plots}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{linearmodel/mlm/qq_plot.png}
+\end{figure}
+Usefull to check whether residuals are approximately normal.\\
+\textcolor{green}{Good pattern}: points close to the reference line, especially in the center.\\
+\textcolor{red}{Bad pattern}: strong tail departures (extreme residuals), systematic asymmetry 
+(skewness), s-shaped pattern (mismatch).\\
+
+\subsubsection{Shapiro-Wlik test}
+Standard test to check whether resisuals are normally distributed or not, to be used together with
+Q-Q plot to strengthen it.
+\begin{center}
+    \textit{$H_0$: residuals are normal $\ H_1$: residuals are not normal}
+\end{center}
+large p-value \arrow no evidence against normality\\
+small p-value \arrow residuals probably are not normally distributed.
+
+
+\subsubsection{Scale-location plots}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{linearmodel/mlm/scale-location_plot.png}
+\end{figure}
+Used to check for homoscedacity.\\
+\textcolor{green}{Good pattern}: roughly horizontal band with uniform spread.\\
+\textcolor{red}{Bad pattern}: increasing trend (variance grows with fitted values) or decreasing 
+trend.
+
+
+\subsubsection{Leverage vs studentized residuals}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{linearmodel/mlm/lev_vs_stud_plot.png}
+\end{figure}
+Used to speparate unusual $X$-values from unusual $Y$/values (in other words useful to highlight
+leverage, outliers and influential points.)
