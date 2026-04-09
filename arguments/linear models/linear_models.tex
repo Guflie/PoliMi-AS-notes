@@ -7,7 +7,7 @@ of the next person who studies 5 hours per week?
     \includegraphics[width=0.3\textwidth]{linearmodel/lm_example.png}
 \end{figure}
 
-Obviously I take the mean of the score samples in that study hour for that amount of studyin hours, 
+Obviously I take the mean of the score samples in that study hour for that amount of studying hours, 
 and I can do the same for the other set of points. We can see there is a linear model between the 
 study hours and the mean of the exam score mean: $\mathbb{E}[score|study\ hours] = f(study\ hours)$.
 \vspace{0.2cm}
@@ -20,7 +20,7 @@ $Y$ := dependent/response variable \arrow it's a random variable (due \seps)
     [Y|X]=\beta_0+\beta_1X+\varepsilon
 \end{equation*}
 where $\beta_0,\beta_1,\sigma^2$ are parameters and we \textbf{assume} that $\mathbb{\varepsilon}=0$
-,$\mathbb{V[\varepsilon]}=\sigma^2$ and that's simmetrically distributed. 
+,$\mathbb{V[\varepsilon]}=\sigma^2$ and that's symmetrically distributed. 
 
 Interpretation of the parameters:
 \begin{itemize}
@@ -42,11 +42,11 @@ predictor value is the same (homoscedasticity) and that $\varepsilon ~\mathcal{N
 \end{figure}
 
 \subsection{Model estimation}
-The model paramters are not usually known, so how do we estimate them from set of samples $(x_1,y_1
+The model parameters are not usually known, so how do we estimate them from set of samples $(x_1,y_1
 \dots (x_n,y_n))$?\\
 We assume $y_i = \beta0 +\beta_1 x_i +\varepsilon_i,\ \varepsilon_i~\mathcal{N}(0,\sigma^2)
 \rightarrow y_i|x_i~\mathcal{N}(\beta_0+\beta_1 x_i, \sigma^2)$\\
-and we chose paramters that minimize the squared error:
+and we chose parameters that minimize the squared error:
 \begin{equation*}
     \hat{\beta}_0,\hat{\beta}_1 = \arg\min_{\beta}\sum_i\varepsilon_i^2=\sum_i\left(y_i-(\beta_0+
     \beta_1 x_i)^2\right)
@@ -89,10 +89,10 @@ Even if it looks like PCA, now we're not minimizing the distance of the line fro
 \textcolor{gray}{(is not even a distance, is not orthogonal)} but just computing the error 
 between the model and the actual data. 
 
-\subsection{Model assesment}
-After estimating our model, we'd like to check the goodnes of it.\\
+\subsection{Model assessssssment}
+After estimating our model, we'd like to check the goodness of it.\\
 To do so, first we compute the variance of out estimations $\hat{\beta}_0,\hat{\beta}_1$ and then we
-us it to build some confidence interval CI.
+use it to build some confidence interval CI.
 
 $$
 \begin{cases}
@@ -107,7 +107,7 @@ $$
 with an $\alpha$\% CI $\hat{\beta_i}\pm t_{n-2,1-\alpha/2}\sqrt{Var(\hat{\beta}_i)}$
 
 One particular thing to see if the computed CI contains zero: if it does, there might the 
-possibility that $Y$ and $X$ are not really dependent \arrow if te CI is just above zero is fine.
+possibility that $Y$ and $X$ are not really dependent \arrow if the CI is just above zero is fine.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{linearmodel/lm_param_CI.png}
@@ -123,7 +123,7 @@ as statistic we use
 \begin{equation*}
     t_i = \cfrac{\hat{\beta_i}}{SE(\hat{\beta_i}) = \sqrt{Var(\hat{\beta_i})}}\sim t_{n-2}
 \end{equation*}
-the statistic is the value/its disperion.
+the statistic is the value/its if dispersion.
 If we get small t p-value under the hypo that the coefficient is zero, it means that I'm seeing
 something very unlikely\arrow I have evidence that the coefficient is not 0. 
 
@@ -180,28 +180,28 @@ $$
 \begin{description}
     \item[\textcolor{orange}{TSS}]\arrow total variability of the data, is the biggest mistake we
     can make during prediction
-    \item[\textcolor{green}{ESS}]\arrow improvement of the model with respect to teh simplest 
+    \item[\textcolor{green}{ESS}]\arrow improvement of the model with respect to the simplest 
     prediction ($\bar{y}$), is the amount of variability captured by our model
     \item[\textcolor{blue}{RSS}]\arrow difference between our model and the real data (error model),
-    is the amount of variability we couldn0t capture
+    is the amount of variability we couldn't capture
 \end{description}
 % put it down as a comment
 If we don't know any model, the only reasonable way to estimate $Y$ is to use $\bar{y}$.
 \hfill\\
-So to evaluate our model we could measure "the \% of variability we capute with our model":
+So to evaluate our model we could measure "the \% of variability we capture with our model":
 \begin{equation*}
     R^2 = \frac{\textcolor{green}{ESS}}{\textcolor{orange}{TSS}} = 
     1 - \frac{\textcolor{blue}{RSS}}{\textcolor{orange}{TSS}}
 \end{equation*}
-We can also used and \textit{adjusted version} that penalizes more complex models, making the add 
-of a new variable more "ponderato":
+We can also used an \textit{adjusted version} that penalizes more complex models, making the add 
+of a new variable more "pondered":
 \begin{equation*}
     R^2_{adj} = 1-\cfrac{\textcolor{blue}{RRS}/(n-p)}{\textcolor{orange}{TSS}/(n-1)}
 \end{equation*}
 
 
-\subsubsection{Residual variability/predicion error}
-We could also try to asses the variability of the prediction. To do so, there are several options:
+\subsubsection{Residual variability/prediction error}
+We could also try to assess the variability of the prediction. To do so, there are several options:
 \begin{description}
     \item[Residual Standard Error (RSE)] 
     \begin{equation*}
@@ -213,17 +213,17 @@ We could also try to asses the variability of the prediction. To do so, there ar
     \begin{equation*}
         RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}
     \end{equation*}
-    Average prediction error magnitude (higher emphasys on larger mistakes).    
+    Average prediction error magnitude (higher emphasis on larger mistakes).    
 
     \item[Mean Absolute Error (MAE)] 
     \begin{equation*}
         MAE = \frac{1}{n}\sum_{i=1}^{n}|y_i-\hat{y}_i|
     \end{equation*}
-    More or less like RMSE, but without the extra emphasys on large mistakes.
+    More or less like RMSE, but without the extra emphasis on large mistakes.
 \end{description}
 
 
-\subsubsection{Model usefullness}
+\subsubsection{Model usefulness}
 We could try to evaluate how useful is our model in explaining the relationship between response
 and predictor: our model is useful if $\beta_1\ne 0$ (captures the relationship) and the more
 variability is able to caputure, the better is \arrow we use a \textbf{F-test}.
@@ -232,8 +232,8 @@ variability is able to caputure, the better is \arrow we use a \textbf{F-test}.
 \end{equation*}
 Giving it an intepretation, if we consider:
 \begin{itemize}
-    \item $ESS/(p-1)$ as the avrage explained variability per parameter
-    \item $RSS/(n-p)$ as the avrage unexplained variability per residual degree of freedom
+    \item $ESS/(p-1)$ as the average explained variability per parameter
+    \item $RSS/(n-p)$ as the average unexplained variability per residual degree of freedom
 \end{itemize}
 We get that \textit{$F$ compares the "signal per parameter" with the "noise per degree of freedom"}.
 If the statistic is low, then there are evidence against the null hypo.
@@ -273,10 +273,10 @@ CI.
 \end{figure}
 
 we could see the interval is narrowest near $x_0=\bar{x}$, expressing how as we move away from the 
-mean as our uncertanty increases.
+mean as our uncertainty increases.
 
 \subsubsection{Prediction interval}
-Now we wanto to tackle the problem "if one student studies $x_0$ hours, what range of scores it
+Now we wan to to tackle the problem "if one student studies $x_0$ hours, what range of scores it
 could hope for?"\arrow we want to estimate $Y_{new}|X=x_0$, now we have the uncertanty due 
 parameters estimation (as before) + the irreducible noise around the mean \seps.
 \begin{equation*}

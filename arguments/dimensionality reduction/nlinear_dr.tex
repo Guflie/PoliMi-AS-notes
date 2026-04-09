@@ -14,10 +14,10 @@ model complex non-linear shapes.
 
 %-----------------------------------------------------------------------------------------
 \subsubsection{Kernel PCA methods}
-This method famility follows the idea that \textit{data might be non-linear in $\real
+This method family follows the idea that \textit{data might be non-linear in $\real
 ^D$ but become "more linear" after a non-linear feature mapping $\phi()$}.
 The non-linear transformation is called \textbf{bias expansion} and can be choosen
-accordgnly to the analyst's assumption about the shape of the feature, $\phi: \real
+accordingly to the analyst's assumption about the shape of the feature, $\phi: \real
 ^p \rightarrow \real^q$; usually we take $q>p$ and transform the sampled data into 
 an higher-dimensional space.\\
 \hfill \\
@@ -37,7 +37,7 @@ One of the advantages of this method is the ability of untangling circles.
 \end{figure}
 \vspace{0.8cm}
 
-The problem with Kernel PCA is the reconstructionof the original space: with linear
+The problem with Kernel PCA is the reconstruction of the original space: with linear
 PCA the inverse is explicit and it's exact if projection and original space have the
 same dimension, approximante if the projection space has less dimensions than the 
 original one. In \textit{Kernel PCA} however $\phi$ is learned/induced by the data
@@ -69,7 +69,7 @@ This type of methods are really useful for data visualization.
 \hfill \\
 
 As reported in the figure, the problem with global similarity is that doesn't
-striclty follows the data shape, while based on similarity between point we \dots
+strictly follows the data shape, while based on similarity between point we \dots
 watch the recording. To do that, we don't need to preserve the distances with respect
 to allo the points, but just with his neighbours. This allow to preserve the 
 geometric relationship of the data. 
@@ -85,7 +85,7 @@ preserve the "right far distance" (not blobal distance as focus).
 \hfill \\
 I translate the distance into probability: if two points are close, they have higher
 probability of being neighbours.
-To determine the negihbourhood concept, the t-SNE firstly determines the \textbf{
+To determine the neighbourhood concept, the t-SNE firstly determines the \textbf{
 similarity score} between points based on the distance between them and a \textit{
 probability distribution}, which allows to decrease the probability smoothly base 
 on the distance between points
@@ -104,8 +104,8 @@ probability that $x_i$ would pick $x_j$ as neighbour")}:
         0 & j=i
     \end{cases}
 \end{equation}
-then to make the relationship simmetric $p_{ij} = \frac{p_{i|j}+p_{j|i}}{2}$.\\
-To project as much as possibile these similarities on a low-dimensional spaces, instead
+then to make the relationship symmetric $p_{ij} = \frac{p_{i|j}+p_{j|i}}{2}$.\\
+To project as much as possible these similarities on a low-dimensional spaces, instead
 of using normal distribution t-SNE use \textit{t-student} to discern due its heavier
 tails
 
@@ -113,7 +113,7 @@ For the low-dimensional space we use instead a \textit{t-student distribution}: 
 projecting the data on fewer dimensions, the points will end up being more squashed 
 together, making the Normal distribution not suited (it will end up considering all the 
 points in the same cluster). The \textit{t-student} instead having heavier tails make
-the probability distribution more evenly spread, leveragin the dimensionality reduction
+the probability distribution more evenly spread, leveraging the dimensionality reduction
 squash effect (also called \textit{crowding problem}) $\rightarrow$ thanks to the heavier
 tails, low-D points can be pushed away without making $q_{ij}$ too small.
 \begin{equation}
@@ -173,13 +173,13 @@ overlapping circles are neighbours $\rightarrow$ the circle's radius is critical
 \end{figure}
 To overcome this problem we can extend the algorithm using a \textit{local radius}: instead
 of fixed value, for some point we use the distance from its n-th neighbour as radius, and
-using somethig similar to a dstance as weight of the edge.
+using somethig similar to a distance as weight of the edge.
 \\
 Differently to \textit{t-SNE} and its perplexity, this method tunes two different parameters:
 \begin{description}
     \item[Nearest neighbour]: the number of neighbours used for the high-D radius, tunes how
     "wide" my clusters will be
-    \item[Min distance]: tunes how much tyghtly data points are gonna be projected in the 
+    \item[Min distance]: tunes how much tightly data points are gonna be projected in the 
     low-D space \textcolor{gray}{(I'm putting some external knwoledge to make the data plots
     more clear, very dangerous for inference)}.
 \end{description}
@@ -234,9 +234,9 @@ dimension the anomalies are.
 Based on your goal:
 \begin{itemize}
     \item \textbf{Data visualization}: use \textit{UMAP} as default, good balance between 
-    execution time and accuracy (sometimes preserves also the gloabl organization); use 
+    execution time and accuracy (sometimes preserves also the global organization); use 
     \textit{t-SNE} when you mainly concern on displaying local cluster separation.
-    \item \textbf{Nonlinear feature engeineering (reusable mapping)}: \textit{autoencoders}
+    \item \textbf{Nonlinear feature engineering (reusable mapping)}: \textit{autoencoders}
     are the best to find explicit mapping; \textit{Kernel PCA} is a good fit for medium-sized
     dataset for which we have some domain model.
     \item \textbf{Data interpretability (like PCA loadings)}: PCA, that's it    

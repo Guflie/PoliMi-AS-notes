@@ -1,7 +1,7 @@
 \subsection{Principal Component Analysis (PCA)}
 
 What if we have $n$ data points, $p$ features and $n>p$?
-It means that some fatures might look somethign completelly different, but in 
+It means that some fatures might look somethign completely different, but in 
 reality some of them are just a combination of the others $\rightarrow$ we 
 have \textbf{collinear features}.
 Collinear features make our job of understanding how each feature influences
@@ -19,7 +19,7 @@ due collinearity, we can't see the individual effect of $x_1$ and $x_2$ on $y$.
 What we want to do is to summarize the data having $p$ features with the smaller
 set ok $k$ derived features; to do this we must balance the clarity of
 representation and the loss of information due the compression $\Rightarrow$ 
-\textbf{Principal Cpmponent Analysis (PCA)} aims to do this using linear 
+\textbf{Principal Component Analysis (PCA)} aims to do this using linear 
 combinations of the selected variables.
 
 \begin{figure}[h]
@@ -27,7 +27,7 @@ combinations of the selected variables.
     \includegraphics[width=0.2\textwidth]{dr/pca/blood_cells.png}
 \end{figure}
 
-Immagine that we want to describe our blood cells sample, and the initial 
+Imagine that we want to describe our blood cells sample, and the initial 
 features are \textit{diameter} and \textit{thickness}, how can we reduce
 the number of features?
 \newpage
@@ -92,7 +92,7 @@ since the data are centered (avg = 0), the varince is:
     \rightarrow
     \max_{u\in\real^p}\frac{1}{n}\sum_{i=1}^n (u^Tx^{(i)})^2
 \end{equation}
-if we define the \textit{emprirical covariance matrix} as
+if we define the \textit{empirical covariance matrix} as
 \begin{equation}
     \Sigma = \frac{1}{n}\sum_{i=1}^n x^{(i)}x^{(i)T} \ \in 
     \real^{p\times p}
@@ -104,15 +104,15 @@ we get that
     \rightarrow
     \max_{u\in\real^p} u^T\Sigma u
 \end{equation}
-The constraint on $u$ can be expressed as $u^Tu=1$ (turning contstraint into 
+The constraint on $u$ can be expressed as $u^Tu=1$ (turning constraint into 
 an equation)
 
-By swtiching to th Lagrangian relaxation:
+By switching to th Lagrangian relaxation:
 \begin{equation}
     \mathcal{L}(u,\lambda)=u^T\Sigma u-\lambda(U^Tu-1)
 \end{equation}
 
-take the drivative
+take the derivative
 \begin{equation}
     \nabla_u (u^T\Sigma u) = 2\Sigma u, \nabla_u (u^Tu) = 2u
     \Rightarrow \nabla_u \mathcal(L) = 2\Sigma u-2\lambda u = 0
@@ -123,7 +123,7 @@ A candidate direction must be an \textbf{eigenvector of $\mathbf{\Sigma}$}.
 So the objective function becomes $u^T\Sigma u=u^T (\lambda u) = \lambda
 (u^T u) = \lambda \rightarrow$ by choosing the highest $\lambda$ we get the
 highest objective function.\\
-So as principal component we take the eigenvector with the highest eigenvaue.
+So as principal component we take the eigenvector with the highest eigenvalue.
 If we want more dimension, we take also the second, the third ...
 
 We can interpret $\Sigma$ a covariance matrix that, when applied to the data
@@ -169,7 +169,7 @@ so we can use these to have a $k$-low-dimensional representation of the dataset.
 The choice of $k$ is the trade-off.
 
 \subsubsection{Portion of Variance Explained}
-We would like to quantify how much each singolar Principal Component (PC)
+We would like to quantify how much each singular Principal Component (PC)
 explains the data variability.
 \begin{equation}
     Var_{TOT}= \sum_{j=1}^p Var(x_j) = \sum_{j=1}^p (\frac{1}{n}\sum_{i=1}^n
@@ -198,26 +198,26 @@ So we can define:
 \end{description}
 \hfil \\
 
-Depending on how much varibaility we'd like to retain, we can module the number
+Depending on how much variability we'd like to retain, we can module the number
 of dimension in $K$ based on the CumEV index.
 \begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{dr/pca/cev_visualized.png}
 \end{figure}
-This technique can be used also to other purpouses that only tune the variance
+This technique can be used also to other purposes that only tune the variance
 level, can be used also to set the treshold to remove the noise from the data.
 
-\subsubsection{How to intepret PCs}
-The weight values can be used to intepret the meaning of the PCs.
+\subsubsection{How to interpret PCs}
+The weight values can be used to interpret the meaning of the PCs.
 \begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{dr/pca/interpret_pcs.png}
 \end{figure}
 \hfill\\
 
-Another useful way to intepret the PCs' meaning is the \textbf{biplot}: using
+Another useful way to interpret the PCs' meaning is the \textbf{biplot}: using
 PCs as axis, we plot both the points projected on the dimensions and the original
-feautres.
+features.
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{dr/pca/biplot_example.png}

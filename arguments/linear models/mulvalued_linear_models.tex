@@ -1,5 +1,5 @@
 \section{Multivalued linear models}
-Simple linear regression models could be exended using multiple predictors too: we switch
+Simple linear regression models could be extended using multiple predictors too: we switch
 from a mean response that is a line to something forming a hyperplane in $\mathbb{R}^{p+1}$ (with 
 $p$ predictors): $\mathbb{E}[Y|X_1=x_1,X_2=x_2]=\beta_0+\beta_1x_1+\beta_2x_2$.
 \begin{figure}[h]
@@ -13,14 +13,14 @@ Giving an intepretation to the parameters, we have that
     \item $\beta_2$ is the change in mean of $Y$ for the unitary increment of $X_2$, keeping $X_1$
     fixed    
 \end{itemize}
-So each parameter can stil be intepreted as slopes, but slopes of a plane viewed from \diff angles.
+So each parameter can stil be interpreted as slopes, but slopes of a plane viewed from \diff angles.
 This interpretation is conditional w.r.t. other paramters, not marginal.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{linearmodel/mlm/mlm_slope_intepret.png}
 \end{figure}
 
-This allows to adjust for cofounding (see more later).
+This allows to adjust for confounding (see more later).
 
 So in general we have predictors $x_i\in\real^p$, responses $y_i\in\real$ and noise \seps with the
 assumptions $\mathcal{E}[\varepsilon|X]=0, \varepsilon\sim\mathcal{N}(0,\sigma^2I_n)$ \arrow using
@@ -35,7 +35,7 @@ $$
     \hat{\beta} = \arg\min_{\beta\in\real^p} RSS(\beta) = \sum_{i=1}^n (y_i-x_i^T\beta)^2 = \left\|
     \mathbf{y}-\mathbf{X}\beta\right\|_2^2
 $$
-To do so we take the differentiat w.r.t. the parameters:
+To do so we take the differential w.r.t. the parameters:
 $$
     \frac{\partial}{\partial\beta} \|y-X\beta\|_2^2 = -sX^T(y-X\beta)=0 \Rightarrow \hat{\beta} = 
     (X^TX)^{-1}X^Ty
@@ -50,7 +50,7 @@ X)^{-1})$, giving us an estimator:
     \item with \textbf{variance} $\hat{\sigma}^2=\cfrac{RSS}{n-p}$ (w.r.t simple linear regression, 
     now we have less degree of freedom)
 \end{itemize}
-As for the simple linar regression, we could asses the model using the same tools:
+As for the simple linear regression, we could asses the model using the same tools:
 \begin{itemize}
     \item std error $\text{SE}(\hat{\beta}_j) = \sqrt{\hat{\sigma}^2 [(X^\top X)^{-1}]_{jj}}$
     \item t-test for one parameter $H_0: \beta_j = 0, \quad t = \frac{\hat{\beta}_j}{\text{SE}
@@ -87,9 +87,9 @@ compare the reduced model with the full model
 
 \subsection{Multicollinearity}
 The main issue with real data is that \textit{predictors are not independent}: we have 
-\textbf{multicollinearity} which means that one predictor is highily predictable from the others.
+\textbf{multicollinearity} which means that one predictor is highly predictable from the others.
 We might have \textbf{perfect collinearity} when the relationship is linear or \textbf{near 
-collinearity} when the combination is almost linear (highly corrleted features).
+collinearity} when the combination is almost linear (highly correlated features).
 
 The multicollinearity problem is not something bad in general, but means that the predictors are
 redundant, with all the unpleasant implications.\\
@@ -99,13 +99,13 @@ Looking at the OLS estimator $\hat{\beta}=(x^TX)^{-1}X^Ty$, it requires $X^TX$ t
 \\ \arrow if there is multicollinearity within the matrix there are linearly dependent columns
 making the matrix non-invertible
 \\ \arrow if $Xv=0$ then $X(\beta+v)=X\beta$ giving us infinite fitted values
-\\ When the data can't distinguish between $\beta$ from $\beta+v$ is said we hae 
+\\ When the data can't distinguish between $\beta$ from $\beta+v$ is said we have 
 \textbf{ill-posedness}. How do we solve the issue? Drop a variable
 \\
 \hfill\\
 If the predictors are \textit{near-collinear} we have that $X^TX$ is invertible but it's 
 \textbf{ill-conditioned}: the inverse exists but it's numerically unstable, as we can see in the 
-variance $Var(\hat{\beta}|X)=\sigma^2 (X^TX)^{-1}$ \arrow this lead to large std error, wide 
+variance $Var(\hat{\beta}|X)=\sigma^2 (X^TX)^{-1}$ \arrow this leads to large std error, wide 
 confidence intervals ...\\
 \begin{figure}[h]
     \centering
@@ -123,10 +123,10 @@ This factor tells us how much the other predictors can explain the other ones.
 \subsubsection{How to deal with multicollinearity}
 \begin{itemize}
     \item remove redundant variables
-    \item merge correlated predictors into one, changing it's interpretability
+    \item merge correlated predictors into one, changing its interpretability
     \item collect more data, hoping that more variation might reduce colllinearity
     \item regularize (see later)
-    \item apply PCA \arrow PCA regression (making the features othogonal by default)
+    \item apply PCA \arrow PCA regression (making the features orthogonal by default)
 \end{itemize}
 
 \subsection{Model assumptions checks}
@@ -155,7 +155,7 @@ the included predictors.\\
 If this this assumption doesn't hold, we might have: variable bias, measurement errors in
 predictors, bad model structure.
 
-\paragraph{Homoscdasticity of residuals}
+\paragraph{Homoscedasticity of residuals}
 \begin{center}
     \textit{The error variance should be constant} $Var(\varepsilon_i|X)=\sigma^2$
 \end{center} 
@@ -179,7 +179,7 @@ measures ...).
 \begin{center}
     $\varepsilon_i \sim \mathcal{N(0,\sigma^2)}$
 \end{center}
-This assumption is not required for the OSL estimator rather than the simplycity of having
+This assumption is not required for the OLS estimator rather than the simplicity of having
 exact t-test, exact F-test, exact CI and exact PI. Also for larger samples mild deviations from
 normal distribution are not problematic due CLT asymptotic result. 
 
@@ -187,7 +187,7 @@ normal distribution are not problematic due CLT asymptotic result.
 
 \paragraph{Leverage points}\hfill\\
 In the observation space, fitted values satisfy $\hat{y}=Hy=X(X^TX)^{-1}X^T$ where $H$:= \textit{
-textmatrix} \arrow $h_{ii}$ gives the \textbf{leverage} of the observations := how unsual the 
+textmatrix} \arrow $h_{ii}$ gives the \textbf{leverage} of the observations := how unusual the 
 observation is in the predictor space. Look that the leverage depends only on $X$, not on $Y$.
 \\ high leverage \arrow unusual combination
 \\ low leverage \arrow typical observation
@@ -200,7 +200,7 @@ exploited model) but due them the regression line is now strongly supported for 
 reducing the uncertanty in that region even if the information about it is not so much, making CIs 
 artificially tighter\arrow gives a false sense of generalization.
 
-\paragraph{Ouliers}\hfill\\
+\paragraph{Outliers}\hfill\\
 Outliers are those observations that are unusual in the response, characterized by large residual
 values $e_i=y_i-\hat{y}_i$. This can cause the increase of RSS, inflate the estimated noise level,
 distort std error (with consequences on test and CI).
@@ -267,5 +267,5 @@ trend.
     \centering
     \includegraphics[width=0.5\textwidth]{linearmodel/mlm/lev_vs_stud_plot.png}
 \end{figure}
-Used to speparate unusual $X$-values from unusual $Y$/values (in other words useful to highlight
+Used to separate unusual $X$-values from unusual $Y$/values (in other words useful to highlight
 leverage, outliers and influential points.)
