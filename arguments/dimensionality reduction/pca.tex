@@ -1,13 +1,13 @@
 \subsection{Principal Component Analysis (PCA)}
 
-What if we have $n$ data points, $p$ features and $n>p$?
-It means that some fatures might look somethign completely different, but in 
+What if we have $n$ data points, $p$ features and $n<p$ ?
+It means that some fatures might look something completely different, but in 
 reality some of them are just a combination of the others $\rightarrow$ we 
 have \textbf{collinear features}.
 Collinear features make our job of understanding how each feature influences
-the targets: let's assume that $x_1$ and $x_2$ are collinear
+the targets harder: let's assume that $x_1$ and $x_2$ are collinear
 \begin{equation}
-    y = \beta_0 + beta_1 x_1 + beta_2 x_2 +\varepsilon
+    y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 +\varepsilon
 \end{equation}
 due collinearity, we can't see the individual effect of $x_1$ and $x_2$ on $y$.
 %\vspace{0.8cm}
@@ -22,14 +22,14 @@ representation and the loss of information due the compression $\Rightarrow$
 \textbf{Principal Component Analysis (PCA)} aims to do this using linear 
 combinations of the selected variables.
 
-\begin{figure}[h]
-    \centering    
-    \includegraphics[width=0.2\textwidth]{dr/pca/blood_cells.png}
-\end{figure}
-
+\vspace{0.6cm}
 Imagine that we want to describe our blood cells sample, and the initial 
 features are \textit{diameter} and \textit{thickness}, how can we reduce
 the number of features?
+\begin{figure}[h]
+    \centering    
+    \includegraphics[width=0.3\textwidth]{dr/pca/blood_cells.png}
+\end{figure}
 \newpage
 
 We can think of projecting the points along one fo the two dimension, choosing
@@ -39,7 +39,7 @@ based on how spreaded the data are along it (e.g. so preserving more information
 } \end{center}
 \begin{figure} [h]
     \centering
-    \begin{subfigure}[c]{0.2\textwidth}
+    \begin{subfigure}[c]{0.25\textwidth}
         \centering
         \includegraphics[width=\linewidth]{dr/pca/dr_blood_ex1.png}
     \end{subfigure}
@@ -50,7 +50,7 @@ based on how spreaded the data are along it (e.g. so preserving more information
     \end{subfigure}
 \end{figure}
 
-So we need a way to capture the maxiaml variability of the data, or on other
+So we need a way to capture the maximal variability of the data: in other
 words to find \textit{along which dimension the data spread the most}.
 \begin{figure}[h]
     \centering
@@ -63,166 +63,171 @@ nothing different from vector space rotations, in 2D you visualize it by immagin
 that the axis rotate)}.\\
 \hfill \\
 
-This objective can be expressed in two ways:
-\begin{enumerate}
-    \item \textbf{Maximize variance}: maximize the data spread along that
+This objective can be expressed in two equivalent ways:
+\begin{description}
+    \item[Maximize variance]: maximize the data spread along that
     direction
-    \item \textbf{Minimize residuals}: minimize the distance of the data points
+    \item[Minimize residuals]: minimize the distance of the data points
     from the the dimension
-\end{enumerate}
+\end{description}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.4\textwidth]{dr/pca/pca_goal_visualzed.png}
+    \includegraphics[width=0.45\textwidth]{dr/pca/pca_goal_visualzed.png}
 \end{figure}
 
 In order to do the PCA:
 \begin{enumerate}
-    \item get a set of data points $x^{(1)}\dots x_{(n)\in \real^p}$
-    \item center in $(0,0)$ the data if needed: $x^{(i)}\leftarrow x^{(i)}-
+    \item get a set of data points $x^{(1)}\dots x^{(n)}\in \real^p$
+    \item center the data in $(0,0)$ if needed: $x^{(i)}\leftarrow x^{(i)}-
     \bar{x}$
-    \item choose a direction $u\in\real^p\ :\ \| x\|_2=1$
+    \item choose a direction $u\in\real^p\ :\ \|x\|_2=1$
     \item project the data $x^{(i)}$ on $u$ : $z_i = u^Tx^{(i)}\in \real$
 \end{enumerate}
 
-If the objective is to maximize the variance along that dimension:\\
-since the data are centered (avg = 0), the varince is:
-\begin{equation}
+Taking the objective of maximizing the variance, we observe that since the data are 
+centered (avg = 0), the varince is:
+\begin{equation*}
     Var(z) = \frac{1}{n}\sum_{i=1}^n z_i^2 = \frac{1}{n}\sum_{i=1}^n 
     (u^Tx^{(i)})^2 = 0
-    \rightarrow
+    \ \rightarrow\ 
     \max_{u\in\real^p}\frac{1}{n}\sum_{i=1}^n (u^Tx^{(i)})^2
-\end{equation}
+\end{equation*}
 if we define the \textit{empirical covariance matrix} as
-\begin{equation}
+\begin{equation*}
     \Sigma = \frac{1}{n}\sum_{i=1}^n x^{(i)}x^{(i)T} \ \in 
     \real^{p\times p}
-\end{equation}
+\end{equation*}
 we get that
-\begin{equation}
+\begin{equation*}
     \frac{1}{n}\sum_{i=1}^n (u^Tx^{(i)})^2 = u^T(\frac{1}{n}
     \sum_{i=1}^n x^{(i)}x^{(i)T})u = u^T\Sigma u
     \rightarrow
     \max_{u\in\real^p} u^T\Sigma u
-\end{equation}
+\end{equation*}
 The constraint on $u$ can be expressed as $u^Tu=1$ (turning constraint into 
 an equation)
 
-By switching to th Lagrangian relaxation:
-\begin{equation}
+By switching to the Lagrangian relaxation:
+\begin{equation*}
     \mathcal{L}(u,\lambda)=u^T\Sigma u-\lambda(U^Tu-1)
-\end{equation}
+\end{equation*}
 
-take the derivative
-\begin{equation}
+and taking the derivative
+\begin{equation*}
     \nabla_u (u^T\Sigma u) = 2\Sigma u, \nabla_u (u^Tu) = 2u
     \Rightarrow \nabla_u \mathcal(L) = 2\Sigma u-2\lambda u = 0
     \Rightarrow \Sigma u = \lambda u
-\end{equation}
+\end{equation*}
 
-A candidate direction must be an \textbf{eigenvector of $\mathbf{\Sigma}$}.
+$\Rightarrow$ a candidate direction must be an \textbf{eigenvector of $\mathbf{\Sigma}$}.\\
 So the objective function becomes $u^T\Sigma u=u^T (\lambda u) = \lambda
 (u^T u) = \lambda \rightarrow$ by choosing the highest $\lambda$ we get the
-highest objective function.\\
-So as principal component we take the eigenvector with the highest eigenvalue.
-If we want more dimension, we take also the second, the third ...
+highest objective function. So as principal component we take the eigenvector with the highest 
+eigenvalue. If we want more dimension, we take also the second, the third ... \\
+\hfill \\
 
-We can interpret $\Sigma$ a covariance matrix that, when applied to the data
+We can interpret $\Sigma$ so that, when applied to the data
 modifies the shape, stretching them toward their principal component, which 
 are the $\Sigma$'s eigenvectors.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{dr/pca/covmat_projection.png}
+    \includegraphics[width=0.3\textwidth]{dr/pca/covmat_projection.png}
 \end{figure}
 
 Two nice properties of PCA are:
 \begin{enumerate}
     \item PCA results are rotation-invariant (depend only on the data, not 
     on the starting axis)
-    \item Principal Components are independent/uncorrelated from each other   
+    \item PCs are independent/uncorrelated from each other by construction (they are eigenvectors)
 \end{enumerate}
 
+\newpage
 \subsubsection{Express data with PCA's components}
-We can see that the original observationa can be re-written using the new
+We can see that the original observations can be re-written using the new
 components: given the starting dimensions $\langle x_1\dots x_p \rangle$, we 
 have
-\begin{equation}
+\begin{equation*}
     PC_j = \phi_{j1}x_1 \dots + \phi_{jp}x_p \Rightarrow z_{ij} = \phi_{1j}x_{i1}
     \dots + \phi_{pj}x_{ip}
-\end{equation}
+\end{equation*}
 where $z_{i,j}$ is the projection of $x^{(i)}$ on the $PC_j$ called \textbf{score}
 and $\phi_{1j},\dots \phi_{pj}$ are the \textbf{weights} given to each original 
 feature to translate to the new PCA coordinates system. 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{dr/pca/pca_projection_example.png}
 \end{figure}
 
 \hfill \\
-Note: standardization (minus mean divided by std-dev) address the problem of
-high-variance features dominating principal components
-\hfill \\
+Note: standardization ($x-\mu/\sigma$) address the problem of
+high-variance features dominating principal components.
+\vspace{0.5cm}
 
 
 \textbf{Why this stuff does it works?}\\
 Usually the data variability depends only on a small subset of all $p$ features, 
-so we can use these to have a $k$-low-dimensional representation of the dataset.
-The choice of $k$ is the trade-off.
+so we can use these to have a $k$-low-dimensional/compressed representation of 
+the dataset. The choice of $k$ is the trade-off.
 
 \subsubsection{Portion of Variance Explained}
 We would like to quantify how much each singular Principal Component (PC)
 explains the data variability.
-\begin{equation}
-    Var_{TOT}= \sum_{j=1}^p Var(x_j) = \sum_{j=1}^p (\frac{1}{n}\sum_{i=1}^n
+\begin{equation*}
+    Var_{\scriptscriptstyle TOT}= \sum_{j=1}^p Var(x_j) = \sum_{j=1}^p (\frac{1}{n}\sum_{i=1}^n
     x_{ij}^2)
-\end{equation}
+\end{equation*}
 If we name $Var_k$ := variance explained by the k-th PC and $Var_{exp}$ := the
 portion of Variance Explained by the selected $k$ components
-\begin{equation}
+\begin{equation*}
     Var_k = \frac{1}{n}\sum_{i=1}^n z_{ik}^2 \Rightarrow Var_{exp} = \cfrac
-    {\sum_k Var_k}{Var_{TOT}}
-\end{equation}
+    {\sum_k Var_k}{Var_{\scriptscriptstyle TOT}}
+\end{equation*}
 However, since the PCs are the eigenvalues of $\Sigma$:
-\begin{equation}
+\begin{equation*}
     Var_k = \frac{1}{n}\sum_{i=1}^n z_{ik}^2 = u_k^T\Sigma u_k = u_k^T(\lambda_k
     u_k) = \lambda_k
-\end{equation}
-\begin{equation}
-    Var_{TOT} = \sum_{j=1}^p Var(x_j) = tr(\Sigma) = \sum_{j=1}^p \lambda_k
-\end{equation}
+\end{equation*}
+\begin{equation*}
+    Var_{\scriptscriptstyle TOT} = \sum_{j=1}^p Var(x_j) = tr(\Sigma) = \sum_{j=1}^p \lambda_k
+\end{equation*}
 So we can define:
 \begin{description}
-    \item[$EVR_k$] Explained Variance Ratio of k = $\cfrac{\lambda_k}
-    {\sum_{m=1}?p}\lambda_m$
-    \item[$CumEV(K)$] cumulative explained variance of the $K$ selection of
-    component = $\cfrac{\sum_{k=1}^K\lambda_k}{\sum_{m=1}?p}\lambda_m$   
+    \item[$\mathbf{EVR_k}$ Explained Variance Ratio of $\mathbf{k}$] = $\cfrac{\lambda_k}
+    {\sum_{m=1}p}\lambda_m$
+    \item[$\mathbf{CumEV(K)}$ Cumulative Explained Variance] of the $K$ selection of
+    component = $\cfrac{\sum_{k=1}^K\lambda_k}{\sum_{m=1}p}\ \lambda_m$   
 \end{description}
-\hfil \\
 
+\newpage
 Depending on how much variability we'd like to retain, we can module the number
-of dimension in $K$ based on the CumEV index.
-\begin{figure}
+of dimensions in $K$ based on the \textit{CumEV index}.
+This technique can be used also to other purposes, not only to tune the variance
+level: it can be used also to set the data noise treshold to remove those components which 
+"make too much noise".
+\begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{dr/pca/cev_visualized.png}
+    \includegraphics[width=0.4\textwidth]{dr/pca/cev_visualized.png}
 \end{figure}
-This technique can be used also to other purposes that only tune the variance
-level, can be used also to set the treshold to remove the noise from the data.
+
 
 \subsubsection{How to interpret PCs}
-The weight values can be used to interpret the meaning of the PCs.
-\begin{figure}
+The PC's weights can be used to interpret the meaning of the PCs itself: by loking at them we can 
+have a clue about which dimensions go in the same direction, and from the give to the PC some kind
+of interpetation
+\begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{dr/pca/interpret_pcs.png}
+    \includegraphics[width=0.4\textwidth]{dr/pca/interpret_pcs.png}
 \end{figure}
 \hfill\\
 
 Another useful way to interpret the PCs' meaning is the \textbf{biplot}: using
 PCs as axis, we plot both the points projected on the dimensions and the original
 features.
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \includegraphics[width=0.7\textwidth]{dr/pca/biplot_example.png}
-\end{figure}
-and we read the thing as:
+    \includegraphics[width=0.4\textwidth]{dr/pca/biplot_example.png}
+\end{figure} \hfill \\
+and we interpret the meaning as following:
 \begin{itemize}
     \item \textbf{arrow direction}: along which direction the feature increases
     \item \textbf{arrow length}: how strongly the features is represented by

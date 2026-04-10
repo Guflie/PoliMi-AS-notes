@@ -3,74 +3,82 @@ In real-life data usually we can assume the \textbf{Manifolds assumption}:
 \begin{center}
     \textit{High-dimensional real data is not scattered uniformly across the ambient 
     space (i.e., the space spanned by the d-original dimensions). Rather, it often 
-    lies on (or near to) a much lower dimensional, curved manifold.}    
+    lies on (or near to) a much lower dimensional CURVED manifold.}    
 \end{center}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.3\textwidth]{dr/non_linear/manifold_vis.png}
+    \includegraphics[width=0.2\textwidth]{dr/non_linear/manifold_vis.png}
 \end{figure}
-PCa is a linear DR techinque, for real data we need techniques able to properly
+PCa is a linear DR techinque, but for real data we need techniques able to properly
 model complex non-linear shapes.
 
 %-----------------------------------------------------------------------------------------
 \subsubsection{Kernel PCA methods}
-This method family follows the idea that \textit{data might be non-linear in $\real
-^D$ but become "more linear" after a non-linear feature mapping $\phi()$}.
-The non-linear transformation is called \textbf{bias expansion} and can be choosen
-accordingly to the analyst's assumption about the shape of the feature, $\phi: \real
-^p \rightarrow \real^q$; usually we take $q>p$ and transform the sampled data into 
-an higher-dimensional space.\\
+This family of methods follows the idea that \textit{data might be non-linear in $\real
+^D$ but might become "more linear" after a non-linear feature mapping $\phi(\cdot)$}.
+The non-linear transformation is called \textbf{bias expansion} $\phi: \real^p \rightarrow 
+\real^q$ and can be choosen accordingly to the analyst's assumption about the shape of the feature; 
+usually we take $q>p$ and transform the sampled data into an higher-dimensional space.\\
 \hfill \\
 
 We define the basis-expanded matrix $\Phi=(\phi(x_1)\dots \phi(x_n))^T\rightarrow
-\Sigma=\Phi^T\Phi$. However, for big-dimensional projections this approach could
-be computationally expensive. In this case we can take advantage of the
+\Sigma=\Phi^T\Phi$.\\ However, for highly-dimensional projections this approach could
+be computationally expensive. In those cases we can take advantage of the
 \textbf{kernel trick}: we can compute $\Sigma_{i,j}=k(x_i,x_j)$ using a \textit{kernel 
-function $k(,)$}, which measures the similarity between two projections and it's 
-defined by $k(x_i,x_j)=\langle\phi(x_i),\phi(x_j)\rangle$ (scalar product).
+function $k(\cdot)$}, which measures the similarity between two projections and it's 
+defined by $k(x_i,x_j)=\langle\phi(x_i),\phi(x_j)\rangle$ \textcolor{gray}{(scalar product)}.\\
 \hfill \\
 
 One of the advantages of this method is the ability of untangling circles.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{dr/non_linear/nldr_untangling_circles.png}
+    \includegraphics[width=0.8\textwidth]{dr/non_linear/nldr_untangling_circles.png}
 \end{figure}
 \vspace{0.8cm}
 
-The problem with Kernel PCA is the reconstruction of the original space: with linear
-PCA the inverse is explicit and it's exact if projection and original space have the
+The problem with Kernel PCA is the original space reconstruction: with \textit{linear
+PCA} the inverse is explicit and it's exact if projection and original space have the
 same dimension, approximante if the projection space has less dimensions than the 
-original one. In \textit{Kernel PCA} however $\phi$ is learned/induced by the data
+original one.\\
+In \textit{Kernel PCA} however $\phi$ is learned/induced by the data
 and this could end up in having complex inverse transformations, if not even
-non-invertible $\phi$. The only solution to this is to relay on learning the
-pre-image of the trasmformation, or more commonly an approximated one.
-% this images can be displayed side to side
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.6\textwidth]{dr/non_linear/inv_kernelPCA.png}    
-\end{figure}
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.6\textwidth]{dr/non_linear/kernel_reconst.png}    
-\end{figure}
+non-invertible $\phi$s. Sometimes the only solution to have some reverse-mapping is to rely on
+learning the pre-image of the transformation, or more commonly an approximation of it.
 
+\begin{figure}[h]
+    \begin{subfigure}{0.48\textwidth}
+        \includegraphics[width=0.95\linewidth]{dr/non_linear/inv_kernelPCA.png}
+        \caption*{The idea of non-linear kernel PCA mapping.}            
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \includegraphics[width=0.95\linewidth]{dr/non_linear/kernel_reconst.png}
+        \caption*{Example of non-biective kernel PCA, with loss in the original feature 
+        reconstrucion.}    
+    \end{subfigure}
+\end{figure}
+\newpage
+\hfill\\
 %-----------------------------------------------------------------------------------------
+\vspace{0.5cm}
 \subsubsection{t-distributed Stochastic Neighbour Embedding (t-SNE)}
 The key idea of this family of methods is to \textit{preserve the data geometry by
-focusing on local neighbours (points near to each other should remain close after
+focusing on local neighbours (points near to each other should remain close to each other after
 the projection)}.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{dr/non_linear/global_vs_local_neigbhbours.png}
-    \caption{On the left distance computed acconrdingly to global distance; on the
-    right distance computed trought local neighbour.}
-\end{figure}
-This type of methods are really useful for data visualization.
+    \caption{On the left the distance computed accordingly to global distance; on the
+    right the distance is computed using local neighbour.}
+    \label{fig:exlocdist}
+\end{figure}\hfill \\
+Note: This type of methods are really useful for data visualization.\\
 \hfill \\
 
-As reported in the figure, the problem with global similarity is that doesn't
+As shown in the Fig \ref{fig:exlocdist} the problem with global similarity is that doesn't
 strictly follows the data shape, while based on similarity between point we \dots
-watch the recording. To do that, we don't need to preserve the distances with respect
+watch the recording. 
+
+To do that, we don't need to preserve the distances with respect
 to allo the points, but just with his neighbours. This allow to preserve the 
 geometric relationship of the data. 
 \begin{figure}[h]
@@ -91,7 +99,7 @@ probability distribution}, which allows to decrease the probability smoothly bas
 on the distance between points
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{dr/non_linear/tSNE-similarity.png}
+    \includegraphics[width=0.55\textwidth]{dr/non_linear/tSNE-similarity.png}
 \end{figure}
 
 For each pair of points $i,j$ we could define the \textbf{Gaussian neighbourhood 
@@ -162,14 +170,14 @@ we build a graph in the high-D space linking the points and we try to apply the 
 on the low-D space to preserve the structure as much as possible.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{dr/non_linear/umap_concept.png}
+    \includegraphics[width=0.5\textwidth]{dr/non_linear/umap_concept.png}
     \caption{High-D and low-D graphs using UMAP}
 \end{figure}
 To build the graph, we place circles centered on the data points, and those points having
 overlapping circles are neighbours $\rightarrow$ the circle's radius is critical
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{dr/non_linear/umap_radius.png}
+    \includegraphics[width=0.4\textwidth]{dr/non_linear/umap_radius.png}
 \end{figure}
 To overcome this problem we can extend the algorithm using a \textit{local radius}: instead
 of fixed value, for some point we use the distance from its n-th neighbour as radius, and
@@ -187,7 +195,7 @@ Differently to \textit{t-SNE} and its perplexity, this method tunes two differen
 UMAP algorithm is way faster that t-SNE, uses a more efficient to shuffle the data.
 
 %-----------------------------------------------------------------------------------------
-/subsubsection{AutoEncoders (AE)}
+\subsubsection{AutoEncoders (AE)}
 The problem with \textit{Kernel PCA} is that is really difficult to turn back in the
 original data space, while \textit{t-SNE/UMAP} are good for visualization but we can't
 do inference with them. The idea is to use a new class fo algorithms capable of going
@@ -206,7 +214,7 @@ between spaces.
 \end{description}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{dr/non_linear/autoencoders__sketch.png}
+    \includegraphics[width=0.35\textwidth]{dr/non_linear/autoencoders__sketch.png}
 \end{figure}
 We can tune the parameters to lose as less information as possible during compression/
 reconstruction phase, maybe even remove only the information we want to loose $\rightarrow$
@@ -221,6 +229,7 @@ reconstruction as losless as possible, we have to \textit{train the algoirthm}:
 \end{equation}
 Commonly we choose $\mathcal{L}(x_i,\hat{x}_i)=\| x_i-\hat{x}_i \|_2^2$.
 
+\hfill\\
 \textcolor{gray}{
 This method doesn't allow to explain the data variabilty induced by each dimension like in 
 PCA, however stiil allow to tune the level the information/varibaility we want to keep
@@ -235,7 +244,7 @@ Based on your goal:
 \begin{itemize}
     \item \textbf{Data visualization}: use \textit{UMAP} as default, good balance between 
     execution time and accuracy (sometimes preserves also the global organization); use 
-    \textit{t-SNE} when you mainly concern on displaying local cluster separation.
+    \textit{t-SNE} when your main concern is displaying local cluster separation.
     \item \textbf{Nonlinear feature engineering (reusable mapping)}: \textit{autoencoders}
     are the best to find explicit mapping; \textit{Kernel PCA} is a good fit for medium-sized
     dataset for which we have some domain model.
@@ -244,20 +253,20 @@ Based on your goal:
 \vspace{0.3cm}
 Method recomendations:
 \begin{description}
-    \item[Kernel PCA]
+    \item[Kernel PCA]\hfill
         \begin{description}
             \item[\textcolor{green}{Pros}]: linearize non-linear structure if a kernel can and
             the dataset sie is manageable.
             \item[\textcolor{red}{Cons}]: not suited for large datasets, and urge the need for
             inverse function, usually only computable trough pre-image approximation. 
         \end{description}
-    \item[t-SNE/UMAP]:      
+    \item[t-SNE/UMAP]\hfill   
         \begin{description}
             \item[\textcolor{green}{Pros}]: use them for visual exploration of local clusters.
             \item[\textcolor{red}{Cons}]: due the global structure distrortion, they can't be
             used to draw conclusions and doing inference.
         \end{description}
-    \item[AutoEncoders]:
+    \item[AutoEncoders]\hfill
         \begin{description}
             \item[\textcolor{green}{Pros}]: learn mapping between spaces, allowing reconstruction
             or interpretability capabilities.
