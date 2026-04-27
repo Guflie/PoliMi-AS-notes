@@ -40,6 +40,8 @@ Some common ones are:
     gives the \# step to reach a destination in a grid by moving up and down, lot of
     usage in many fields
 
+    \item \textbf{Canberra Distance}: $d_{\text{Canberra}}(x, q) = \sum_{i=1}^{n} \frac{|x_i - q_i|}{|x_i| + |q_i|} \rightarrow$ this distance magnifies the impact of small differences when absolute values are small.
+
     \item \textbf{Correlation-based Distance}: $d_R(x,q)=1-\cfrac{s_{x,q}}{\sqrt{s_x}
     \sqrt{s_q}}=1-\cfrac{\sum_i(x_i-\bar{x})(q_i-\bar{q})}{\sqrt{\sum_i(x_i-\bar{x})
     ^2\sum_i(q_i-\bar{q})^2}} \rightarrow$ this measures allow to get an idea about
@@ -191,22 +193,22 @@ also be used for anomaly detection.
 \paragraph{Linkage methods}\hfill\\
 How do we compute the "center" between build-up clusters? 
 \begin{description}
-    \item[Single link]: cluster-distance is based on the two closest points from each 
-    cluster
+    \item[Single linkage]: cluster-distance is based on the two closest points from each 
+    cluster. It tends to create long chain-like clusters. Suited for clusters naturally spread out.
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.1\textwidth]{clustering/hierachical/single_linkage.png}        
     \end{figure}
 
-    \item[Average link]: cluster-distance is based on the average position of the cluster
-    datapoints
+    \item[Average linkage]: cluster-distance is based on the average position of the cluster
+    datapoints. Less sensitive to outliers than \textit{simple linkage} but more flexible than \textit{complete linkage}
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.1\textwidth]{clustering/hierachical/avg_linkage.png}        
     \end{figure}
 
-    \item[Complete link]: cluster-distance is based on the most distant points from each
-    cluster
+    \item[Complete linkage]: cluster-distance is based on the most distant points from each
+    cluster. It esnures tight and well-defined clusters, more resilient to outliers, but when data are naturally spread it might over-fragment them.
     \begin{figure}[h!]
         \centering
         \includegraphics[width=0.1\textwidth]{clustering/hierachical/complete_linkage.png}        
@@ -216,6 +218,12 @@ How do we compute the "center" between build-up clusters?
 There is no rule of thumb, start with the average and adjust things.
 % what about the mode for this one?
 
+The \textit{cophenetic distance} between two points is the height at which they are merged in the same cluster.
+The \textit{Cophenetic Correlation  Coefficient} instead is a metric to compare how well the hierarchical clustering preserves the orginale pairwise distances (basically it's the correlation between the cophenetic distance and the normal distance)
+$$
+CCC = \frac{\sum (d_{ij} - \bar{d})(c_{ij} - \bar{c})}{\sqrt{\sum (d_{ij} - \bar{d})^2 \sum (c_{ij} - \bar{c})^2}}
+$$
+ 
 \newpage
 %\vspace{0.5cm}
 %-----------------------------------------------------------------------------------------
@@ -450,7 +458,7 @@ Many commons choices are:
 How do we evaluate if our clusters make sense if we don't have an output reference?
 
 \subsubsection{Within Cluster Sum of Square (WCSS)}
-WCSS measures the variability of the observations within each cluster.
+WCSS measures the variability of the observations within each cluster.  In other words, it measures how compact the cluster is.
 \begin{equation}
     WCSS = \sum_i\sum_{p\in C_i} dist(p,C_i)^2
 \end{equation}
@@ -463,9 +471,17 @@ doesn't decreases a too much.\\
 With this method we're also looking at how similar points within the same cluster are, 
 without considering the other goal of clustering: distance between \diff clusters.
 
+\subsubsection{Between-clusters Sum of Square (BSS)}
+BSS measures how far away the clusters are.
+$$
+BSS = \sum_{k=1}^{K} |C_k| \cdot \| \mu_k - \mu \|^2
+$$
+where $\mu$ is global avarage of all points. We would like to maximize this metric in order
+to make the clusters as distinct as possible.
+
 \subsection{Silhouette Score}
 This metrics takes into account both the distance between points in the same cluster and
-the distance from other cluster's points.
+the distance from other cluster's points, measuring therefore both the cohesion and separation of clusters.
 
 \begin{enumerate}
     \item $\forall$ point $i$ get all the distances from the points within the same
@@ -479,6 +495,11 @@ the distance from other cluster's points.
     \item get the \textbf{Silhouette score for overall clustering}: $sil(C)=\cfrac{1}{K}
     \sum_{k=1}^K sil(C_k)$
 \end{enumerate}
+
+If for some point $i$ the $sil(i)$ is +1 the point is much closer to its own cluster with respect to tother cluster, for
+values near 0 the points lies in the edge between clusters and for values -1 the point probably is misclusterized.
+
+% you must take the plot 'a linguina'
 
 \subsection{Model-based clustering quality}
 We try to exploit the model-structure (like in \textit{probabilistic clustering}) to evaluate our 
