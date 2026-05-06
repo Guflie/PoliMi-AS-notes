@@ -18,28 +18,27 @@ Let's look at the \textbf{example} of categorizing some bacteria:
 To separate the groups better we add new information about another measure
 \textcolor{gray}{(before we have that each point has one feature, while now 
 we're considering two features for each point, if you think about it you are 
-in fact adding information and making the points more different from each other)}
+adding information and making the points more different from each other)}
 \begin{figure}[h]
     \centering
     \begin{subfigure}[t]{0.2\textwidth}
         \centering
         \includegraphics[width=0.95\linewidth]{dr/example_cd_2d.png}
     \end{subfigure}
-    \hspace{0.5cm}
+    \hspace{0.8cm}
     \begin{subfigure}[t]{0.2\textwidth}
         \centering
         \includegraphics[width=0.95\linewidth]{dr/example_cd_2d_expl.png}
         {
             \captionsetup{width=1.5\linewidth, margin={0cm, -3cm}, labelformat=empty}
-            \caption{If we try to maintain for the 2-d scenario the same density of 
-            the 1-dimension case, we would end up with 81 samples.}
+            \caption{If we try to maintain the same density of the 1-dimension case also for the 2-d scenario , we would end up with 81 samples.}
         }
     \end{subfigure}
 \end{figure}
 
 If we extend the space up to the 3th dimension we are capable of 
 distinguish the data using only a linear model. To do the same in 2 dimensions
-we should have used more complex models.
+we had to use more complex (non linear) models.
 \begin{figure}[h]
     \centering
     \begin{subfigure}[t]{0.3\textwidth}
@@ -55,8 +54,8 @@ we should have used more complex models.
 
 \newpage
 Another phenomena of the curse of dimensionality is \textbf{Distance concentration}: as 
-the number of samples goes to infinity, the relative distances between point tend to 
-become zero, starting to concetrate on the expected value.
+the number of samples goes to infinity, the relative distances between datapoints tend to 
+become zero, starting to concentrate to the expected value.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{dr/distance_concentration.png}

@@ -87,24 +87,23 @@ Usually the choice of a model is influenced by some trade-offs:
 \subsection{Underfitting vs Overfitting problem}
 
 Start with the example of estimating the height of the next student entering the room 
-during lecture, in order to do that our prediction $\hat{y}$ should minimize a certain 
+during lecture: in order to do that our prediction $\hat{y}$ should minimize a certain 
 function, usually the \textbf{Mean Squared prediction Error (MSE)}.
 \begin{equation*}
     MSE(\hat{y})=\frac{1}{n}\sum_{i=1}^n (\hat{y}_i-y_i)^2
 \end{equation*}
 
-If we know the height of all students, we want to use the population mean $\mu$ as 
-predictor, doing so we get as MSE $\mathbb{E}[(Y-\mu)^2]=Var(Y)=\sigma^2$.\\
+If we know the height of all students, we'd like to use the population mean $\mu$ as 
+predictor, and by doing so we get as MSE $\mathbb{E}[(Y-\mu)^2]=Var(Y)=\sigma^2$.\\
 \begin{center} \textcolor{red}{
-    \textbf{The data variance is irreducible, we can't do better than that.}   
+    \textbf{The data variance is irreducible, we can't go beyond that.}   
 } \end{center}
 \hfill \\
 
-However, it's impossible to have information about the whole population; so what we do
-is taking a small sample from it over and over, using the sample mean $\bar{Y}$ as $\mu$
-and getting $MSE_{avg}=\mathbb{E}[(\hat{Y}-Y)^2]$. By decomposing the average MSE we are
-able to understand which are our sources of error: this reduction leads to two source of
-errors, \textit{bias} and \textit{variance}.
+However, it's impossible to have information about the whole population; so what we are
+going to do is taking a small sample from it over and over, using the sample mean 
+$\bar{Y}$ as predictor and getting $MSE_{avg}=\mathbb{E}[(\hat{Y}-Y)^2]$. By decomposing the 
+average MSE we are able to understand which are our sources of error: \textit{bias} and \textit{variance}.
 \begin{description}
     \item[Bias]: $Bias(\hat{Y})=\expect[\hat{Y}-\mu]$, we have bias if our predictions 
     are systematically to high or too low
@@ -117,8 +116,8 @@ errors, \textit{bias} and \textit{variance}.
     \includegraphics[width=0.6\textwidth]{introduction/bias_variance_idea.png}
 \end{figure}
 
-So if we try to fit a model $f(X)$ with some training data, and we end up with $\hat{f}(X)$
-with some test observation $(x_0,y_0)$, we have that
+So if we try to fit a model $f(X)$ with some training data, we end up with $\hat{f}(X)$, evaluating
+it on some test observation $(x_0,y_0)$ (not in the training set) we have that
 \begin{equation*}
     \expect[y_0-\hat{f}(x_0)] = Var[\hat{f}(x_0)] + Bias[\hat{f}(x_0)]^2 + Var(\varepsilon)
 \end{equation*}
@@ -129,22 +128,22 @@ with some test observation $(x_0,y_0)$, we have that
 \end{description}
 \newpage
 
-If we take a model too much simple, we end up with something having high bias, but not really
-susceptible to training set (low variance) $\Rightarrow$ \textbf{Underfitting}.
+If we take a model too simple, we end up with something having high bias, but not really
+susceptible to the specific training set (low variance) $\Rightarrow$ \textbf{Underfitting}.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{introduction/underfitting.png}
 \end{figure}
 
 If instead we use a model too complex we get something with very low bias, but extrimelly
-sensitive to the data we sample $\Rightarrow$ \textbf{Overfitting}.
+sensitive to the data we sample for the training $\Rightarrow$ \textbf{Overfitting}.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{introduction/overfitting.png}
 \end{figure}
 
 What we see in practise is that Bias and Variance are strictly correlated: while one of the
-two decreases, the other increases. This force us to find some trade-off between these twos.
+two decreases, the other increases. This forces us to find some trade-off between these twos.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{introduction/tradeoff_bias_variance.png}

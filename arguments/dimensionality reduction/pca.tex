@@ -2,10 +2,10 @@
 
 What if we have $n$ data points, $p$ features and $n<p$ ?
 It means that some fatures might look something completely different, but in 
-reality some of them are just a combination of the others $\rightarrow$ we 
+reality some of them are just a combination of others $\rightarrow$ we 
 have \textbf{collinear features}.
-Collinear features make our job of understanding how each feature influences
-the targets harder: let's assume that $x_1$ and $x_2$ are collinear
+Collinear features make harder our job of understanding how each feature influences
+the targets : let's assume that $x_1$ and $x_2$ are collinear
 \begin{equation}
     y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 +\varepsilon
 \end{equation}
@@ -17,12 +17,13 @@ due collinearity, we can't see the individual effect of $x_1$ and $x_2$ on $y$.
     \includegraphics[width=0.5\textwidth]{dr/pca/dr_matrix_example.png}    
 \end{figure}
 What we want to do is to summarize the data having $p$ features with the smaller
-set ok $k$ derived features; to do this we must balance the clarity of
+set ok $k$ artifically derived features; to do this we must balance the clarity of
 representation and the loss of information due the compression $\Rightarrow$ 
 \textbf{Principal Component Analysis (PCA)} aims to do this using linear 
 combinations of the selected variables.
 
 \vspace{0.6cm}
+\textcolor{Green}{\textbf{Example}:}\\
 Imagine that we want to describe our blood cells sample, and the initial 
 features are \textit{diameter} and \textit{thickness}, how can we reduce
 the number of features?
@@ -32,7 +33,7 @@ the number of features?
 \end{figure}
 \newpage
 
-We can think of projecting the points along one fo the two dimension, choosing
+We can think of projecting the points along one of the two dimensions, choosing it
 based on how spreaded the data are along it (e.g. so preserving more information).
 \begin{center} \textcolor{red}{
     \textbf{In statitics information = variability.}   
@@ -107,19 +108,19 @@ we get that
 The constraint on $u$ can be expressed as $u^Tu=1$ (turning constraint into 
 an equation)
 
-By switching to the Lagrangian relaxation:
+By switching to the Lagrangian relaxed problem:
 \begin{equation*}
-    \mathcal{L}(u,\lambda)=u^T\Sigma u-\lambda(U^Tu-1)
+    \mathcal{L}(u,\lambda)=u^T\Sigma u-\lambda(u^Tu-1)
 \end{equation*}
 
 and taking the derivative
 \begin{equation*}
-    \nabla_u (u^T\Sigma u) = 2\Sigma u, \nabla_u (u^Tu) = 2u
+    \nabla_u (u^T\Sigma u) = 2\Sigma u,\ \nabla_u (u^Tu) = 2u
     \Rightarrow \nabla_u \mathcal(L) = 2\Sigma u-2\lambda u = 0
     \Rightarrow \Sigma u = \lambda u
 \end{equation*}
 
-$\Rightarrow$ a candidate direction must be an \textbf{eigenvector of $\mathbf{\Sigma}$}.\\
+$\Rightarrow$ a candidate direction $u$ must be an \textbf{eigenvector of $\mathbf{\Sigma}$}.\\
 So the objective function becomes $u^T\Sigma u=u^T (\lambda u) = \lambda
 (u^T u) = \lambda \rightarrow$ by choosing the highest $\lambda$ we get the
 highest objective function. So as principal component we take the eigenvector with the highest 
@@ -127,7 +128,7 @@ eigenvalue. If we want more dimension, we take also the second, the third ... \\
 \hfill \\
 
 We can interpret $\Sigma$ so that, when applied to the data
-modifies the shape, stretching them toward their principal component, which 
+modifies the shape, it strech them toward their principal component, which 
 are the $\Sigma$'s eigenvectors.
 \begin{figure}[h]
     \centering
@@ -152,7 +153,7 @@ have
 \end{equation*}
 where $z_{i,j}$ is the projection of $x^{(i)}$ on the $PC_j$ called \textbf{score}
 and $\phi_{1j},\dots \phi_{pj}$ are the \textbf{weights} given to each original 
-feature to translate to the new PCA coordinates system. 
+feature to translate it into the new PCA coordinates system. 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{dr/pca/pca_projection_example.png}
@@ -164,7 +165,7 @@ high-variance features dominating principal components.
 \vspace{0.5cm}
 
 
-\textbf{Why this stuff does it works?}\\
+\textbf{Why this stuff is useful other than re-shaping the data?}\\
 Usually the data variability depends only on a small subset of all $p$ features, 
 so we can use these to have a $k$-low-dimensional/compressed representation of 
 the dataset. The choice of $k$ is the trade-off.
@@ -173,11 +174,10 @@ the dataset. The choice of $k$ is the trade-off.
 We would like to quantify how much each singular Principal Component (PC)
 explains the data variability.
 \begin{equation*}
-    Var_{\scriptscriptstyle TOT}= \sum_{j=1}^p Var(x_j) = \sum_{j=1}^p (\frac{1}{n}\sum_{i=1}^n
-    x_{ij}^2)
+    Var_{\scriptscriptstyle TOT}= \sum_{j=1}^p Var(x_j) = \sum_{j=1}^p \left(\frac{1}{n}\sum_{i=1}^n x_{ij}^2\right)
 \end{equation*}
-If we name $Var_k$ := variance explained by the k-th PC and $Var_{exp}$ := the
-portion of Variance Explained by the selected $k$ components
+If we name $Var_k$ := variance explained by the single k-th PC and $Var_{exp}$ := the
+portion of Variance Explained by the selected first $k$ components
 \begin{equation*}
     Var_k = \frac{1}{n}\sum_{i=1}^n z_{ik}^2 \Rightarrow Var_{exp} = \cfrac
     {\sum_k Var_k}{Var_{\scriptscriptstyle TOT}}
@@ -212,16 +212,15 @@ level: it can be used also to set the data noise treshold to remove those compon
 
 \subsubsection{How to interpret PCs}
 The PC's weights can be used to interpret the meaning of the PCs itself: by loking at them we can 
-have a clue about which dimensions go in the same direction, and from the give to the PC some kind
-of interpetation
+have a clue about which dimensions go along in the same direction, and from them we can give to the PC some kind of interpetation
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{dr/pca/interpret_pcs.png}
 \end{figure}
 \hfill\\
 
-Another useful way to interpret the PCs' meaning is the \textbf{biplot}: using
-PCs as axis, we plot both the points projected on the dimensions and the original
+Another useful tool to interpret the PCs' meaning is the \textbf{biplot}: using
+PCs as axis, we plot both the points projected on the PCA dimensions and the original
 features.
 \begin{figure}[h]
     \centering
