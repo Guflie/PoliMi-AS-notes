@@ -1,0 +1,25 @@
+\section{Multinomial Logistic Regression}
+This kind of problem is the generalization of classical \textit{logistic regression} in which we have $K$classes, assuming one class as \textit{baseline} (take the K-th class without loss of generality) and building up the model with the other classes:
+\begin{align}
+&\prob(y = k | x) = \frac{e^{\beta_{k0} + \beta_{k1} x_1 + \beta_{k2} x_2 + \dots + \beta_{kp} x_p}}{1 + \sum_{j=1}^{K-1} e^{\beta_{j0} + \beta_{j1} x_1 + \beta_{j2} x_2 + \dots + \beta_{jp} x_p}} \quad\text{for }k < K \\
+&\prob(y = K | x) = \frac{1}{1 + \sum_{j=1}^{K-1} e^{\beta_{j0} + \beta_{j1} x_1 + \beta_{j2} x_2 + \dots + \beta_{jp} x_p}} = 1 - \sum_{k=1}^{K-1} \prob(y = k | x)
+\end{align}
+iso now for each variable we have a set of coefficients, one for each class. The baseline class will remain without a parameters, but we can choose it.
+Now we can compute the 
+$$
+\log\left(
+\frac{P(y = k \mid x)}
+     {P(y = K \mid x)}
+\right)
+=
+\beta_{k0}
++
+\beta_{k1}x_1
++
+\beta_{k2}x_2
++
+\dots
++
+\beta_{kp}x_p
+\qquad \text{for } k = 1, \dots, K-1
+$$
