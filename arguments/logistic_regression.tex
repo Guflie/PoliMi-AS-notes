@@ -115,7 +115,7 @@ To get the basic linear regression model from GLMS, we can take $g()=Id$
 
 % --------------------------------------------------------------------------------------------------------
 \vspace{0.3cm}
-\subsection{Classification model}
+\subsection{Classification models (classifiers)}
 The logistic regression doesn't give a label directly, instead its output is the probability of that label: $\hat{p}_i=\mathbb{P}(Y_i=1|X_i)$.
 To get some kind of \textbf{classification rule} we have to set a \textit{treshold} $t\in (0,1)$
 $$
@@ -129,8 +129,9 @@ $$
     \includegraphics[width=0.4\linewidth]{img/logisticreg/logreg_classificator.png}
 \end{figure}
 
+\paragraph{How to choose the threshold}
 The most common choice is taking $t=0.5$, however is really context-dependent: if we'd like a model more selective/conservative we should take a high treshold.
-Sometimes when the datset is \textit{unbalanced} it might be a good idea to set the treshold to the relative frequence of the minority class.
+Sometimes when the datset is \textit{unbalanced} it might be a good idea to set the treshold to the relative frequence of the minority class. Another suggestion is to use the \textit{negative class} frequency (by convention the case $0$ is the negative class) . Otherwise there is also the \textit{Youden's J index} which suggest of using $TPR -FPR$ (see later what this values are).
 
 % --------------------------------------------------------------------------------------------------------
 \vspace{0.3cm}
@@ -216,7 +217,7 @@ if this interval in the odds world contains 1 hten the coefficient might be irre
 
 % --------------------------------------------------------------------------------------------------------
 \subsection{Classifier performance}
-We can resume the outcome ouf our classfier in a \textit{confusion matrix}.
+We can resume the outcome ouf our classfier in a \textbf{confusion matrix}: it resumes the outcome of the model in predicting the datapoint classification.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\linewidth]{img/logisticreg/classifier_performance.png}
@@ -224,3 +225,14 @@ We can resume the outcome ouf our classfier in a \textit{confusion matrix}.
 \textbf{Accuracy} := raw number of good evaluation, a little bit silly since is influenced by how much tha dataset is unbalanced.
 
 % take the last 5-10 minutes of the recording in which she's talking about the ROC curve and AUC index, plus
+
+We could see that these values are dependent from the threshold chosen. We could think of maximizing the model selection based on the maximization of accuracy.
+
+To remove this dependecy we can take the area of this curve.
+
+This type of evaulation for classification model has some drawbacks: it requires amodel that uses probabilities as output.
+% -----
+Other metrics are 
+$$\text{Recall} = \text{Sensitivity} = \frac{TP}{TP+FN}$$
+$$\text{F1-Score} = \frac{2 \cdot \text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$
+$$\text{Specificity} = \frac{TN}{TN+FP}$$
