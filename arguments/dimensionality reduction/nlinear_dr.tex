@@ -9,14 +9,14 @@ In real-life data usually we can assume the \textbf{Manifolds assumption}:
     \centering
     \includegraphics[width=0.2\textwidth]{dr/non_linear/manifold_vis.png}
 \end{figure}
-PCa is a linear DR techinque, but for real data we need techniques able to properly
+PCA is a linear DR techinque, but for real data we need techniques able to properly
 model complex non-linear shapes.
 
 %-----------------------------------------------------------------------------------------
 \subsubsection{Kernel PCA methods}
 This family of methods follows the idea that \textit{data might be non-linear in $\real
 ^D$ but might become "more linear" after a non-linear feature mapping $\phi(\cdot)$}.
-The non-linear transformation is called \textbf{bias expansion} $\phi: \real^p \rightarrow 
+The non-linear transformation is called \textbf{basis expansion} $\phi: \real^p \rightarrow 
 \real^q$ and can be choosen accordingly to the analyst's assumption about the shape of the feature; 
 usually we take $q>p$ and transform the sampled data into an higher-dimensional space.\\
 \hfill \\
@@ -56,7 +56,7 @@ learning the pre-image of the transformation, or more commonly an approximation 
         reconstrucion.}    
     \end{subfigure}
 \end{figure}
-\newpage
+
 \hfill\\
 %-----------------------------------------------------------------------------------------
 \vspace{0.5cm}
@@ -68,18 +68,16 @@ the projection)}.
     \centering
     \includegraphics[width=0.6\textwidth]{dr/non_linear/global_vs_local_neigbhbours.png}
     \caption{On the left the distance computed accordingly to global distance; on the
-    right the distance is computed using local neighbour.}
+    right the distance is computed using local neighbourhood.}
     \label{fig:exlocdist}
 \end{figure}\hfill \\
-Note: This type of methods are really useful for data visualization.\\
+Note: This type of methods are really useful for data visualization in 2D/3D by performing some kind of embedding.\\
 \hfill \\
 
 As shown in the Fig \ref{fig:exlocdist} the problem with global similarity is that doesn't
-strictly follows the data shape, while based on similarity between point we \dots
-watch the recording. 
-
+strictly follows the data shape, while based on similarity between point we are able to adapt to it.
 To do that, we don't need to preserve the distances with respect
-to allo the points, but just with his neighbours. This allow to preserve the 
+to all the points, but just with neighbours. This allows to preserve the 
 geometric relationship of the data. 
 \begin{figure}[h]
     \centering
@@ -88,23 +86,20 @@ geometric relationship of the data.
 \hfill \\
 
 t-SNE is mainly focused on preserving neighbourhood: points that are close in the
-original space should stay clore in the mapping, otherwise they aren't forced to 
-preserve the "right far distance" (not blobal distance as focus).
-\hfill \\
-I translate the distance into probability: if two points are close, they have higher
-probability of being neighbours.
-To determine the neighbourhood concept, the t-SNE firstly determines the \textbf{
-similarity score} between points based on the distance between them and a \textit{
-probability distribution}, which allows to decrease the probability smoothly base 
-on the distance between points
+original space should remain close in the mapping, otherwise they aren't forced to 
+preserve the "right far distance" (not global distance as focus, meaning that the extact global distance might not be preserved).
+
+\vspace{0.3cm}
+
+To do this we translate the distance into probability: if two points are close, they have higher
+probability of being neighbours. To determine the neighbourhood concept, the t-SNE firstly determines the \textbf{similarity score} between points based on the distance between them using a \textit{probability distribution} to decrease smoothly the score based on the distance between points.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.55\textwidth]{dr/non_linear/tSNE-similarity.png}
 \end{figure}
 
-For each pair of points $i,j$ we could define the \textbf{Gaussian neighbourhood 
-distribution} (fore example) as \textcolor{gray}{(we could think about is as "the 
-probability that $x_i$ would pick $x_j$ as neighbour")}:
+For each pair of points $i,j$ we define the \textbf{Gaussian neighbourhood 
+distribution} (for example, other distributions can be used as well) as :
 \begin{equation}
     p_{j|i}= \begin{cases}
         \cfrac{exp(-\| x_i - x_j \|^2/(2\sigma_i)^2)}{\sum_{j\neq i}exp(-\| x_i - x_j 
@@ -113,15 +108,14 @@ probability that $x_i$ would pick $x_j$ as neighbour")}:
     \end{cases}
 \end{equation}
 then to make the relationship symmetric $p_{ij} = \frac{p_{i|j}+p_{j|i}}{2}$.\\
-To project as much as possible these similarities on a low-dimensional spaces, instead
-of using normal distribution t-SNE use \textit{t-student} to discern due its heavier
-tails
+\textcolor{gray}{(Think about it is as "the 
+probability that $x_i$ would pick $x_j$ as neighbour")}\\
+\vspace{0.2cm}
 
 For the low-dimensional space we use instead a \textit{t-student distribution}: by 
 projecting the data on fewer dimensions, the points will end up being more squashed 
 together, making the Normal distribution not suited (it will end up considering all the 
-points in the same cluster). The \textit{t-student} instead having heavier tails make
-the probability distribution more evenly spread, leveraging the dimensionality reduction
+points in the same cluster). The \textit{t-student} instead has heavier tails, making the probability distribution more evenly spread, leveraging the dimensionality reduction
 squash effect (also called \textit{crowding problem}) $\rightarrow$ thanks to the heavier
 tails, low-D points can be pushed away without making $q_{ij}$ too small.
 \begin{equation}

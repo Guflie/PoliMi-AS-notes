@@ -193,17 +193,16 @@ However, since the PCs are the eigenvalues of $\Sigma$:
 So we can define:
 \begin{description}
     \item[$\mathbf{EVR_k}$ Explained Variance Ratio of $\mathbf{k}$] = $\cfrac{\lambda_k}
-    {\sum_{m=1}p}\lambda_m$
+    {\sum_{m=1}^p\lambda_m}$
     \item[$\mathbf{CumEV(K)}$ Cumulative Explained Variance] of the $K$ selection of
-    component = $\cfrac{\sum_{k=1}^K\lambda_k}{\sum_{m=1}p}\ \lambda_m$   
+    component = $\cfrac{\sum_{k=1}^K\lambda_k}{\sum_{m=1}^p\lambda_m} $   
 \end{description}
 
 \newpage
 Depending on how much variability we'd like to retain, we can module the number
 of dimensions in $K$ based on the \textit{CumEV index}.
 This technique can be used also to other purposes, not only to tune the variance
-level: it can be used also to set the data noise treshold to remove those components which 
-"make too much noise".
+level: it can be used also to set the data noise treshold in order to remove those components "making too much noise".
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{dr/pca/cev_visualized.png}
@@ -234,3 +233,15 @@ and we interpret the meaning as following:
     \item \textbf{angle between arrows}: relationship between original features
 \end{itemize}
 
+\subsubsection{Data scaling}
+Up to now we've used the covariance matrix $\Sigma$ but this lead to sognificant results only if the data are on the same unit/scale, otherwise data with higher values will dominate the others.
+This issue can be addresses in two ways:
+\begin{itemize}
+    \item using the correlation matrix
+    \item standardize the data up to a 0-mean unit-variance $X_{ij}'=\cfrac{X_{ij}-\bar{X}}{\sigma_j}$
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img//dr//pca/pca_scaling.png}
+\end{figure}
+In general standardizing the data is the prefered solution, and it's done not only in PCA but also in all the methods that will follow.
