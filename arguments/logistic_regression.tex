@@ -1,5 +1,5 @@
 \section{Logistic Regression}
-In the linear regression we have a linear relationship between the target and the predictors, what if the relationship isn't linear? Let's assume our target is variable is a \textbf{binary variable}
+In the linear regression we have a linear relationship between the target and the predictors, what if the relationship isn't linear? Let's assume our target variable is a \textbf{binary variable}
 $$
  Y_i=\begin{cases}
  1 & student\ i\ \ passes \\
@@ -9,13 +9,13 @@ $$
 \prob (Y=1|X=x) = p
 $$
 
-If we try to use a linear regression model, we end up with something that ignores the real variable range. 
+If we try to use a linear regression model, we end up with something that ignores the actual variable range, spreading across the whole real numbers. 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.3\linewidth]{img/logisticreg/linreg_exced_range.png}
 \end{figure}
 
-The idea is to solve the range issue is to change the undeling shape: we shift from the world of probabilities to the world of \textbf{odds} := how more likely is some event to happen with respect to not happen.
+The idea to solve the range issue is to change the undeling shape: we shift from the world of probabilities to the world of \textbf{odds} := how more likely is some event to happen with respect to not happen.
 $$
  odds = \frac{p}{1-p}
 $$
@@ -24,14 +24,14 @@ $$
     \includegraphics[width=0.3\linewidth]{img/logisticreg/odds_explained.png}
 \end{figure}
 
-and we then intepret them as follows:
+and we then interpret them as follows:
 \begin{itemize}
     \item $odds=1$ success and failure are equally possible
     \item $odds>1$ succcess is more probable than failure 
-    \item $odds<1$ failure is more probabl than success
+    \item $odds<1$ failure is more probable than success
 \end{itemize}
 
-However we can't use the linear regression with odds since they are a non-negative measure (the won't never go below zero) \arrow we take instead the \textbf{log-odds/logit}
+However we can't apply the linear regression with odds since they are a non-negative measure (the won't never go below zero) \arrow we take instead the \textbf{log-odds/logit}
 $$
  \log(odds) = \log\left(\frac{p}{1-p}\right)
 $$
@@ -54,7 +54,7 @@ $$
     \centering
     \includegraphics[width=0.5\linewidth]{img/logisticreg/logistic_regression.png}
 \end{figure}\hfill\\
-One of the advantages of this type fo regression is that it nevere crosses the 0, allowing us to intepret its value as a probability, and instead the extrems flatterns on [0,1]. Another good thing is that we are able to interpret the model:\\
+One of the advantages of this type fo regression is that it never crosses the 0, allowing us to intepret its value as a probability, and instead at the extrems flatterns on [0,1]. Another good thing is that we are able to interpret the model:\\
 
 \vspace{0.6cm}
 \textbf{Coefficient's interpretation: categorical variables} \\
@@ -87,13 +87,13 @@ In general we can deduce that the increase is constant in the log-odds space:
     \includegraphics[width=0.4\linewidth]{img/logisticreg/logodds_slope.png}
 \end{figure}
 
-The the effect in the odds space is still constant $e^{\beta_1}$, but visualized as an exponential:
+The effect in the odds space is still constant $e^{\beta_1}$, but visualized as an exponential:
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\linewidth]{img/logisticreg/odds_slope.png}
 \end{figure}
 
-On probablities instead the ratio is not constant, but dependes on where the position on the logistic curve:
+On probablities instead the ratio is not constant, but dependes on the position of the logistic curve:
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\linewidth]{img/logisticreg/prob_logreg_slode.png}
@@ -136,7 +136,7 @@ Sometimes when the datset is \textit{unbalanced} it might be a good idea to set 
 % --------------------------------------------------------------------------------------------------------
 \vspace{0.3cm}
 \subsection{Model assumption of linear regression}
-Some assumption made for the linear regression moels are relaxed, for the logistic regression usually we assume that:
+Some assumption made for the linear regression moels are relaxed for the logistic regression, usually we assume that:
 \begin{itemize}
     \item observations are independet
     \item only important/meaningful predictors are included, irrelvant ones arent't added
@@ -168,7 +168,7 @@ this different slope in the log-odds space is reflected also in the probability 
 Since our predictors are binary $\{0,1\}\ni Y_i \sim Bernoulli(p_i)$ we have that $\prob(Y_i=y|X_i)=p_i^{y}(1-p_i)^{1-y}$ \arrow a good model should assing high probability to the outcomes that actually occurred and low to those not occurred \arrow a good model chooses $\beta$s so that the observed pattern are as plausible as possible.\\ 
 To estimate the model we use MLE as always:
 $$
-L(\beta)= \prod_{i=1}^np_i^y(1-p_i)^{1-y} \rightarrow \ell(\beta)=\log L(\beta) = \sum_{i=1}^n y\log p_i + (1-y)\log (1-p_i
+L(\beta)= \prod_{i=1}^np_i^y(1-p_i)^{1-y} \rightarrow \ell(\beta)=\log L(\beta) = \sum_{i=1}^n y\log p_i + (1-y)\log (1-p_i)
 $$
 
 \newpage
@@ -184,55 +184,58 @@ Similar situation for the \textbf{quasi-complete separation} := most predictors 
 In the case of (quasi)perfect separation software might fail to converge, return extremely large coefficients with large std errors, or in some cases even warnings. To avoid these isseus we can try to collect more data, simplifying the model, combine/remove sparse categories or use penalized logistic regression (logistic regression that adds penalties in the loss function to avoid overfitting).
 
 % --------------------------------------------------------------------------------------------------------
-% give another look to this
+
 \vspace{0.3cm}
 \subsection{Model usefulness assessment}
 A first approach to measure our model's performance is compare it with the purely-random/intercept-only predictor. As metric for the comparison we use the \textbf{likelihood ratio test} 
 $$
 2(\ell_{full}-\ell_{null})
 $$ 
-where $full$ stand for our model and $null$ for the intercept-only \arrow the larger the better. The 2 is only to fit the statistic in a Chi-squared distribution.\\
+where $full$ stand for our model and $null$ for the intercept-only \arrow the larger the better. The 2 is only to fit the statistic in a Chi-squared distribution, allowing to compute a p-vlaue and do our evaluation with that.\\
 
 \vspace{0.5cm}
-Another metric to evaluate our model il the \textbf{deviance} $-2\ell$ where $\ell$ is the log-likelihood, so the larger the better.\\
-This statistic is useful when we want to compare two nested models.
+Another metric to evaluate our model is the \textbf{deviance} $-2\ell$ where $\ell$ is the log-likelihood, so the larger the better.\\
+This statistic is useful when we want to compare two nested models (not really useful).
 
 \vspace{0.5cm}
-Another metric used to compare out model with the intercept-only one we can also use the \textbf{McFdadden's pseudo-$R^2$}
+Another metric used to compare out model with the intercept-only one we can also use the \textbf{McFdadden's pseudo-$R^2$} (not to be confused with the linear regression $R^2$)
 $$
 R^2_{McFadden}  = 1 -\cfrac{\ell_{full}}{\ell_{null}}
 $$
 
-After general model fitting estimation, we'd like to know whether each predicotr contributes or not: to do so we use statistic tests: $H_0:\beta_j=0$ vs $H_1:\beta_j\neq0$\\
+After general model fitting estimation, we'd like to know whether each predicotr contributes or not; to do so we use statistic tests: $H_0:\beta_j=0$ vs $H_1:\beta_j\neq0$\\
 A common used statistic is
 $$
 z=\cfrac{\hat{\beta}_j}{SE(\hat{\beta}_j)}
 $$
-if the values is large then the realtive p-value is low, giving strong evidence that the predictor is meaningful. As usual, if we build a confidence interval we get $\hat{\beta}_j \pm z_{1-\alpha/2}\ SE(\hat{\beta}_j)$ and this interval contains zero, the coefficient might be absent.
-However this is for the log-odds, for the odds realm we have to make it exponential:
+if the values is large then the realtive p-value is low, giving strong evidence that the predictor is meaningful. As usual, if we build a confidence interval we get $\hat{\beta}_j \pm z_{1-\alpha/2}\ SE(\hat{\beta}_j)$ and if this interval contains zero, the coefficient might be 0/irrelevant.
+However this is for the log-odds, if we want to do the analysis in the odds realm we have to make it exponential:
 $$
 \hat{\beta}_j \rightarrow e^{\hat{\beta}_j},\ \left[e^{\hat{\beta}_j^L}\ ,\ e^{\hat{\beta}_j^U} \right]
 $$
-if this interval in the odds world contains 1 hten the coefficient might be irrelevant.
+if this interval in the odds-world contains 1 then the coefficient might be irrelevant.
 
 % --------------------------------------------------------------------------------------------------------
 \subsection{Classifier performance}
-We can resume the outcome ouf our classfier in a \textbf{confusion matrix}: it resumes the outcome of the model in predicting the datapoint classification.
+We can resume the outcome ouf our classfier in a \textbf{confusion matrix}: it compares the outcome of the model in predicting the datapoint classification with the true datapoint classification.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\linewidth]{img/logisticreg/classifier_performance.png}
+    \includegraphics[width=0.7\linewidth]{img/logisticreg/classifier_performance.png}
 \end{figure}\hfill\\
-\textbf{Accuracy} := raw number of good evaluation, a little bit silly since is influenced by how much tha dataset is unbalanced.
+\textbf{Accuracy} := raw number of good evaluations made by the model, this metric is a little bit silly since it's influenced by level of unbalance of the dataset.
 
-% take the last 5-10 minutes of the recording in which she's talking about the ROC curve and AUC index, plus
+\vspace{0.2cm}
+We could see that all thee values are dependet from the threshold chosen. Can we figure out a way to make the evaulation independent from this? We could think of trying out all possible thresholds, and choosing the one maximizing some metric.
 
-We could see that these values are dependent from the threshold chosen. We could think of maximizing the model selection based on the maximization of accuracy.
+\subsubsection{ROC curve \& AUC}
+We compare the \textit{sensitivity} of the model with its FPR=1-\textit{specificity} for all the possible thresholds \textcolor{gray}{(each threshold gives you a diffrent ratio)}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img//logisticreg/ROC_curve.png}
+\end{figure}\hfill\\
 
-To remove this dependecy we can take the area of this curve.
-
-This type of evaulation for classification model has some drawbacks: it requires amodel that uses probabilities as output.
-% -----
-Other metrics are 
-$$\text{Recall} = \text{Sensitivity} = \frac{TP}{TP+FN}$$
-$$\text{F1-Score} = \frac{2 \cdot \text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$
-$$\text{Specificity} = \frac{TN}{TN+FP}$$
+To obtain a numeric indication of this fit we compute the area if this curve, obtaining the \textbf{Area Under Curve (AUC)} metric: values near 0.5 indicate a predictor similar to the trivial one, instead for AUC near 1 we get the perfect predictor.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img//logisticreg/auc.png}
+\end{figure}

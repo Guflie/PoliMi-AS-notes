@@ -114,8 +114,8 @@ probability that $x_i$ would pick $x_j$ as neighbour")}\\
 
 For the low-dimensional space we use instead a \textit{t-student distribution}: by 
 projecting the data on fewer dimensions, the points will end up being more squashed 
-together, making the Normal distribution not suited (it will end up considering all the 
-points in the same cluster). The \textit{t-student} instead has heavier tails, making the probability distribution more evenly spread, leveraging the dimensionality reduction
+together, making the Normal distribution not suited for the job(it will end up considering all the 
+points in the same cluster). The \textit{t-student} instead has heavier tails and lower hill, making the probability distribution more evenly spread\textcolor{gray}{(we repesent better our uncertanty on the inter-distance between points)}, leveraging the dimensionality reduction
 squash effect (also called \textit{crowding problem}) $\rightarrow$ thanks to the heavier
 tails, low-D points can be pushed away without making $q_{ij}$ too small.
 \begin{equation}
@@ -127,29 +127,30 @@ tails, low-D points can be pushed away without making $q_{ij}$ too small.
 \end{equation} 
 \hfill \\
 
-Using different distributions and different dimensionality, we end up with two different
-\textbf{similarity matricies}, and out objective becomes making them look alike as much 
-as possible $\rightarrow$ minimizingthe mismatch between $p_{ij}$ and $q_{ij}$. To do
-tath we iterate to end up with a low-D similarity matrix that is similar to the original
-one.
+By using different distributions for different dimensionality we end up with two different
+\textbf{similarity matricies}, and our objective becomes making them look alike as much 
+as possible, minimizing the mismatch between $p_{ij}$ and $q_{ij}$.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{dr/non_linear/similmat_comparison.png}
 \end{figure}
-\begin{equation}
-    C(Y) = KL(P | Q) = \sum_{i\ne j} p_{ij}\log \frac{p_{ij}}{q_{ij}}    
-\end{equation}
-the difference is computed using \textit{KL divergence}, which is a way to measure distance
+
+So starting from some random initialization for the points placement, we use an iterative algorithm to move them in the low-D space.\\
+The difference is computed using \textit{KL divergence}, which is a way to measure distance
 between probabilities.
-\\
+\begin{equation}
+    KL(P | Q) = \sum_{i\ne j} p_{ij}\log \frac{p_{ij}}{q_{ij}}    
+\end{equation}
+
 This cost heavily penalizes high mistatch and has strong local structure preservation 
 \textcolor{gray}{(focus on maintainig true neighbours, not in preserving the true 
 far-away distances)} $\rightarrow$ this might cause \textbf{distortion of the global
 structure}.
-\\
+
+\vspace{0.2cm}
 \textbf{Perplexity on hyperparameters}\\
 How do we choose hyperparameters? By changing the variance of the distributions we shape
-the concept of neighbourhood, changing the preplexity ($perp. ~ \sigma^2$) $\rightarrow$ 
+the concept of neighbourhood, which is done by changing the preplexity ($perp. \propto \sigma^2$) $\rightarrow$ 
 we have to balance between the dimensionality of the data and  how many cluster do we 
 expect to have.
 \begin{figure}[h]
@@ -160,23 +161,24 @@ expect to have.
 %-----------------------------------------------------------------------------------------
 \subsubsection{Uniform Manifold APproximantion (UMAP)}
 The idea of this method is still to preserve neighbourhood but using different approach:
-we build a graph in the high-D space linking the points and we try to apply the same graph
-on the low-D space to preserve the structure as much as possible.
+we build a graph in the high-D space linking the points and we try to obtain the same graph
+on the low-D space in order to preserve the structure as much as possible.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{dr/non_linear/umap_concept.png}
     \caption{High-D and low-D graphs using UMAP}
 \end{figure}
+\newpage
 To build the graph, we place circles centered on the data points, and those points having
-overlapping circles are neighbours $\rightarrow$ the circle's radius is critical
+overlapping circles are neighbours $\rightarrow$ the circle's radius hyperparameter choice is critical.\\
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{dr/non_linear/umap_radius.png}
 \end{figure}
 To overcome this problem we can extend the algorithm using a \textit{local radius}: instead
-of fixed value, for some point we use the distance from its n-th neighbour as radius, and
+of fixed radius value, for each point we use the distance from its k-th neighbour as radius, and
 using somethig similar to a distance as weight of the edge.
-\\
+\vspace{0.2cm}
 Differently to \textit{t-SNE} and its perplexity, this method tunes two different parameters:
 \begin{description}
     \item[Nearest neighbour]: the number of neighbours used for the high-D radius, tunes how
@@ -185,7 +187,7 @@ Differently to \textit{t-SNE} and its perplexity, this method tunes two differen
     low-D space \textcolor{gray}{(I'm putting some external knwoledge to make the data plots
     more clear, very dangerous for inference)}.
 \end{description}
-\hfill \\
+\vspace{0.2cm}
 UMAP algorithm is way faster that t-SNE, uses a more efficient to shuffle the data.
 
 %-----------------------------------------------------------------------------------------
@@ -199,24 +201,23 @@ between spaces.
 \begin{description}
     \item[Encoder (compression)]: \hfill \\
     $z_i=f_\theta(x_i),\ f_\theta:\real^D\rightarrow\real^d$ with $z=f_\theta(x)=\sigma(Wx+b) 
-    \rightarrow$ the conders apply a non-linear function \ssigma := activation function on 
-    pre-linear-combination $Wx+b$ (\ssigma, $W$, $b$ are parameters)
+    \rightarrow$ the econder applies a non-linear function \ssigma := activation function on a 
+    pre-linear combination $Wx+b$ (\ssigma, $W$, $b$ are parameters)
     \item[Decoders (reconstruction)]: \hfill \\
     $\hat{x}_i=g_\phi(z_1),\ g_\phi:\real^d\rightarrow \real^D$ with $\hat{x}=g_\phi(z)=
-    \rho(Vz+c)$; the structure is the same as encoder, just in the other way around (and 
-    uses \diff params).
+    \rho(Vz+c)$; the structure is the same as encoder, just in the other way around (the hyperparameters used are \diff).
 \end{description}
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.35\textwidth]{dr/non_linear/autoencoders__sketch.png}
 \end{figure}
 We can tune the parameters to lose as less information as possible during compression/
-reconstruction phase, maybe even remove only the information we want to loose $\rightarrow$
-Autoencoders allow us to decide what we lose.\\
+reconstruction phase, maybe even to remove only the information we want to loose $\rightarrow$
+one of the main advantages of Autoencoders is that they allow us to decide what we lose.\\
 \vspace{0.5cm}
 
 \textbf{Training objective}: to tune the parameter sets $\theta,\phi$ in order to make the
-reconstruction as losless as possible, we have to \textit{train the algoirthm}:
+reconstruction as loss-less as possible, we have to \textit{train the algoirthm}:
 \begin{equation}
     \hat{x}_i=g_\phi(f_\theta(x_i)) \rightarrow \min_{\theta,\Phi} \frac{1}{n} 
     \mathcal{L}(x_i,\hat{x_i})
@@ -226,9 +227,9 @@ Commonly we choose $\mathcal{L}(x_i,\hat{x}_i)=\| x_i-\hat{x}_i \|_2^2$.
 \hfill\\
 \textcolor{gray}{
 This method doesn't allow to explain the data variabilty induced by each dimension like in 
-PCA, however stiil allow to tune the level the information/varibaility we want to keep
-$\rightarrow$ very useful to identify data anomaly: if a point is very far away the original
-space will be projected far away, and also during the reconstrucion phase the decoder will try
+PCA, however still allow to tune the level information/varibaility we want to keep
+$\rightarrow$ very useful to identify data anomaly: if a point is very far away from the original
+space it will be projected far away, and also during the reconstrucion phase the decoder will try
 to reconstruct it as normal point, giving high reconstruction error and displaying on which 
 dimension the anomalies are. 
 }
@@ -249,8 +250,8 @@ Method recomendations:
 \begin{description}
     \item[Kernel PCA]\hfill
         \begin{description}
-            \item[\textcolor{green}{Pros}]: linearize non-linear structure if a kernel can and
-            the dataset sie is manageable.
+            \item[\textcolor{green}{Pros}]: linearizes non-linear structure if a kernel can be found and
+            the dataset size is manageable.
             \item[\textcolor{red}{Cons}]: not suited for large datasets, and urge the need for
             inverse function, usually only computable trough pre-image approximation. 
         \end{description}

@@ -1,0 +1,35 @@
+\section{Classification models}
+
+Classification (in a general way) is a supervised learning task in which we try to assign to each sample $x_i$ a \textbf{class label} $y_i$ \arrow the key idea is to separate the feature space in classes.
+
+% idk if keeping this
+The goal is to learn a model $f(x)\rightarrow \hat{\prob}(Y=y|X=X)$ and then shift from probabilites to predicting labels \arrow clustering is both a prediction problem and a decision problem.
+
+For example a \textbf{linear classfier} draws a line in the middle of the feature space.
+
+the \textit{logistic regression} IS a linar classfier, in fact creates a raw linear division of the space.
+
+The problem is that often the boundaries are non-linear, requiring to shift toward more complex models.
+
+\subsection{K-Nearest Neighbor}
+The idea behind this is that \textit{similar observations should have similar labels} 
+
+To classify a new observation we take it, we take 
+...
+
+This method is extremelly flexxible, often overfits the training data \arrow to leverage the overfitting we take instead $k$ closest points. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{k-neighbours-selection.png}
+\end{figure}
+
+The $k$ is therefore an hyperparameter and finding the right $k$ is a \textbf{model-selection problem}.
+
+K-NN  \textcolor{red}{limitations}:
+\begin{itmi}
+    \item sensitive to noise (mislabeled points)
+    \item 
+\end{itmi}
+
+Variuous classifiers have the same idea of how to construct decision regions
