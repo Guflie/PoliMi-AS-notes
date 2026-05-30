@@ -37,7 +37,7 @@ $$
 $$
 To do so we take the differential w.r.t. the parameters:
 $$
-    \frac{\partial}{\partial\beta} \|y-X\beta\|_2^2 = -sX^T(y-X\beta)=0 \Rightarrow \textcolor{red}{\hat{\beta} = (X^TX)^{-1}X^Ty}
+    \frac{\partial}{\partial\beta} \|y-X\beta\|_2^2 = -2X^T(y-X\beta)=0 \Rightarrow \textcolor{red}{\hat{\beta} = (X^TX)^{-1}X^Ty}
 $$
 
 \subsection{Model assesment}
@@ -46,7 +46,7 @@ X)^{-1})$, giving us an estimator:
 \begin{itemize}
     \item \textbf{unbiased} $\mathbb{E}[\hat{\beta}|X]=\beta$
     \item with \textbf{covariance} $Var(\hat{\beta}|X)=\sigma^2(X^TX)^{-1}$
-    \item with \textbf{variance} $\hat{\sigma}^2=\cfrac{RSS}{n-p}$ (although is the same formul of simple linear regression, now we have less degree of freedom)
+    \item with \textbf{variance} $\hat{\sigma}^2=\cfrac{RSS}{n-p}$ (although is the same formula of simple linear regression, now we have less degree of freedom)
 \end{itemize}
 As for the simple linear regression, we could asses the model using the same tools:
 \begin{itemize}
@@ -64,7 +64,7 @@ Remeber that all the assesment are considered holding the other parameters fixed
     \includegraphics[width=0.5\textwidth]{linearmodel/mlm/mlm_var_explained.png}
     \caption*{
     As we could see, the concept and metrics remain the same as for simple linear 
-    regressionm, therefore the extension to multiple predictor doesn't change this part.}
+    regression, therefore the extension to multiple predictor doesn't change this part.}
 \end{figure}
 
 \subsubsection{Model usefulness}
@@ -116,7 +116,7 @@ However, we could have fitted values $\hat{y}=X\hat{\beta}$ pretty stable even w
 How can we understand if some predictor might cause \textit{variance inflations}?
 
 \vspace{0.2cm}
-Take predictor $X_j$ and build a model that predicts $X_j$ from all the other predictor and consider this $R_j$, we have that
+Take predictor $X_j$ and build a model that predicts $X_j$ from all the other predictors and consider this $R_j$, we have that
 \begin{align*}
 & \text{Var}(\hat{\beta}_j | X) = \frac{\sigma^2}{\sum_{i=1}^{n} (x_{ij} - \bar{x}_j)^2} \cdot \frac{1}{1 - R_j^2}\\
 & \Rightarrow \textbf{VIF} = \frac{1}{1-R^2_j}
@@ -134,9 +134,9 @@ If $R_j^2\rightarrow0\Rightarrow \text{VIF}\rightarrow\infty$ we see that the va
 
 \newpage
 \subsection{Checking model assumptions}
-Up to now we've made some assumptions about the error: $\mathcal{E}[\varepsilon|X]=0, Var(\varepsilon|
+Up to now we've made some assumptions about the error: $\mathbb{E}[\varepsilon|X]=0, Var(\varepsilon|
 X)=\sigma^2, Cov(\varepsilon_i,\varepsilon_j|X)=0$ and on other aspects  of the model, but what if
-this assumption doesn't hold?
+these assumption doesn't hold?
 
 \paragraph{Model linearity}
 \begin{center}
@@ -154,7 +154,7 @@ This doesn't mean that the predictors have to be linear, only the combination of
     $\expect[\varepsilon_i|X]=0$
 \end{center}
 meaning that there is no leftover information in the error and the errors are uncorrelated with the included predictors.\\
-If this this assumption doesn't hold, we might have: variable bias, measurement errors in
+If this assumption doesn't hold, we might have: variable bias, measurement errors in
 predictors, bad model structure.
 
 % if you figure out how to do it, do it
@@ -184,7 +184,7 @@ information within the datset is less than the sample size.\\
 This kind of assumption often fails in a lot of realistic scenarios (time series, repeated
 measures ...).
 
-\paragraph{Independence of errors}
+\paragraph{Error normality}
 \begin{center}
     $\varepsilon_i \sim \mathcal{N(0,\sigma^2)}$
 \end{center}
@@ -241,7 +241,7 @@ coefficients, distorted predictions and inference.
 \end{figure}
 Useful to check linearity of the mean, homoscedacity and possible outliers/leverage points.\\
 \vspace{0.2cm}
-\textcolor{green}{Good pattern}: andom cloud centered around zero, without visible structure.\\
+\textcolor{green}{Good pattern}: random cloud centered around zero, without visible structure.\\
 \textcolor{red}{Bad pattern}: curved pattern (suggests nonlinearity), funnel shape (suggests 
 heteroscedasticity), isolated points (possible outliers)\\
 
@@ -260,7 +260,7 @@ Usefull to check whether residuals are approximately normal or not.\\
 Standard test to check whether resisuals are normally distributed or not, to be used together with
 Q-Q plot to strengthen it.
 \begin{center}
-    \textit{$H_0$: residuals are normal $\ H_1$: residuals are not normal}
+    \textit{$H_0$: residuals are normal} \text{ vs }$\ H_1$\textit{: residuals are not normal}
 \end{center}
 large p-value \arrow no evidence against normality\\
 small p-value \arrow residuals probably are not normally distributed.
@@ -279,7 +279,7 @@ trend.
 
 \vspace{0.4cm}
 \subsubsection{Leverage vs studentized residuals}
-Used to separate unusual $X$-values from unusual $Y$/values (in other words useful to highlight
+Used to separate unusual $X$-values from unusual $Y$-values (in other words useful to highlight
 leverage, outliers and influential points.)
 \begin{figure}[h!]
     \centering

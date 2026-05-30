@@ -142,7 +142,7 @@ We iterate until the algorithm converges, e.g. the points won't change cluster.
     end the best result.\newline
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.2\textwidth]{clustering/kmeans/init_assignment_error.png}
+        \includegraphics[width=0.4\textwidth]{clustering/kmeans/init_assignment_error.png}
     \end{figure}
 
     \item we have to choose $k$ in advance, maybe without clear idea of we're doing
@@ -215,7 +215,7 @@ There is no rule of thumb, start with the average linkage and then adjust based 
 % what about the mode for this one?
 \newpage
 The \textit{cophenetic distance} between two points is the height at which they are merged in the same cluster.
-The \textit{Cophenetic Correlation  Coefficient} instead is a metric to compare how well the hierarchical clustering preserves the orginal pairwise distances (basically it's the correlation between the cophenetic distance and the normal distance)
+The \textit{Cophenetic Correlation  Coefficient (CCC)} instead is a metric to compare how well the hierarchical clustering preserves the orginal pairwise distances (basically it's the correlation between the cophenetic distance between two points and the "normal" distance in the space).
 $$
 CCC = \frac{\sum (d_{ij} - \bar{d})(c_{ij} - \bar{c})}{\sqrt{\sum (d_{ij} - \bar{d})^2 \sum (c_{ij} - \bar{c})^2}}
 $$
@@ -229,7 +229,7 @@ distributed following strange shapes. We also don't need to specify the number o
 in advance.
 
 \subsubsection{Density-Based Spatial Clustering of Applications with Noise (DBSCAN)} \hfill \\
-This method is able to find arbitrary shaped cluster without a prefixed total number, also in 
+This method is able to find arbitrary shaped cluster without a pre-defined number, also in 
 presence of noise. We can tune the algorithm by adjusting two hyperparameters:
 \begin{itemize}
     \item \texttt{eps} $\varepsilon$: distance used to define neighbourhoods $\rightarrow$ defines how much dense a region should be in order to be considered a cluster
@@ -246,7 +246,7 @@ Given these parameters, we divide the datapoints in 3 classes:
 \end{description}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.4\textwidth]{clustering/density/DBSCAN_point_categories.png}
+    \includegraphics[width=0.6\textwidth]{clustering/density/DBSCAN_point_categories.png}
 \end{figure}
 \hfill \\
 
@@ -256,17 +256,17 @@ Given these parameters, we divide the datapoints in 3 classes:
     \item label the datapoints as core, border and noise
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.2\textwidth]{clustering/density/dbscan_step1.png}
+        \includegraphics[width=0.3\textwidth]{clustering/density/dbscan_step1.png}
     \end{figure}
     \item connect those cores that are neighbours (they're in the circle of another core-point) and generate a cluster
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.3\textwidth]{clustering/density/dbscan_step2.png}
+        \includegraphics[width=0.4\textwidth]{clustering/density/dbscan_step2.png}
     \end{figure}
     \item connect the border-points to the nearest core-point, and remove the noise-points
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.3\textwidth]{clustering/density/dbscan_step3.png}
+        \includegraphics[width=0.4\textwidth]{clustering/density/dbscan_step3.png}
     \end{figure}
 \end{enumerate}
 

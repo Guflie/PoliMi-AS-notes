@@ -2,8 +2,8 @@
 In the linear regression we have a linear relationship between the target and the predictors, what if the relationship isn't linear? Let's assume our target variable is a \textbf{binary variable}
 $$
  Y_i=\begin{cases}
- 1 & student\ i\ \ passes \\
- 0 & student\ i\ \ fails
+ 1 & \text{student $i$ passes} \\
+ 0 & \text{student $i$ fails}
 \end{cases}\ 
 \Rightarrow
 \prob (Y=1|X=x) = p
@@ -15,7 +15,7 @@ If we try to use a linear regression model, we end up with something that ignore
     \includegraphics[width=0.3\linewidth]{img/logisticreg/linreg_exced_range.png}
 \end{figure}
 
-The idea to solve the range issue is to change the undeling shape: we shift from the world of probabilities to the world of \textbf{odds} := how more likely is some event to happen with respect to not happen.
+The idea to solve the range issue is to change the undeling shape: we shift from the world of probabilities to the world of \textbf{odds} := how more likely is some event to happen with respect to it not happen.
 $$
  odds = \frac{p}{1-p}
 $$
@@ -46,19 +46,19 @@ Now in this new \textit{log-odds} space we use linear regression:
     & \rightarrow \frac{p_i}{1-p_i} = e^{\beta_0 + \beta_1x_{i1}\ ... + \beta_px_{ip}} \\
     & \rightarrow p_i = \cfrac{1}{1+e^{\beta_0 + \beta_1x_{i1}\ ... + \beta_px_{ip}}}
 \end{align*}
-so by doing to we get back the probability through the \textbf{linear regression applied within a sigmoid function} (the model is still linear, but in the log-odds scale):
+by doing so we get back the probability through the \textbf{linear regression applied within a sigmoid function} (the model is still linear, but in the log-odds scale):
 $$
 p_i = \sigma(\eta_i)=\sigma(\beta_0+\beta_1x_{i1}...+\beta_px_{ip})
 $$
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\linewidth]{img/logisticreg/logistic_regression.png}
+    \includegraphics[width=0.6\linewidth]{img/logisticreg/logistic_regression.png}
 \end{figure}\hfill\\
 One of the advantages of this type fo regression is that it never crosses the 0, allowing us to intepret its value as a probability, and instead at the extrems flatterns on [0,1]. Another good thing is that we are able to interpret the model:\\
 
 \vspace{0.6cm}
 \textbf{Coefficient's interpretation: categorical variables} \\
-Our feature is somethign like this:
+Our feature is something like this:
 $$
  x_i=\begin{cases} 0 & GroupA\\ 1& GroupB\end{cases}\ 
 \rightarrow \log\left(\frac{p_i}{1-p_i}\right) = \beta_0+\beta_1x_i
@@ -67,7 +67,7 @@ to compare the two groups we have to subtract the fitted values:
 \begin{align*}
 & log\left(\frac{p_B}{1-p_B}\right)-log\left(\frac{p_A}{1-p_A}\right) = \beta_0+\beta_1-\beta_0 = \beta_1 \\
 & \\
-& \rightarrow \log\left(\frac{p_b/(1-p_B)}{p_A/(1-p_A)}\right)=\beta_1
+& \rightarrow \log\left(\frac{p_B/(1-p_B)}{p_A/(1-p_A)}\right)=\beta_1
 \end{align*}
 $\Rightarrow$ the odds-ratio is equal to the slope in the log-odds space.
 
@@ -75,7 +75,7 @@ $\Rightarrow$ the odds-ratio is equal to the slope in the log-odds space.
 \textbf{Coefficient's intereptation: continuous variables}\\
 If instead we consider a continuous predictor we get
 \begin{align*}
-& \log\left(\frac{p(x)}{1-p(x)}\right)=\beta_0+\beta_1x,\ \log\left(\frac{p(x+1)}{1-p(x+1)}\right)=\beta_0+\beta_1(x+1) \\
+& \log\left(\frac{p(x)}{1-p(x)}\right)=\beta_0+\beta_1x,\quad\log\left(\frac{p(x+1)}{1-p(x+1)}\right)=\beta_0+\beta_1(x+1) \\
 & \\
 & \rightarrow \log\left(\frac{odds\ at\ x+1}{odds\ at\ x}\right) = \beta_1
 \end{align*}
@@ -87,13 +87,13 @@ In general we can deduce that the increase is constant in the log-odds space:
     \includegraphics[width=0.4\linewidth]{img/logisticreg/logodds_slope.png}
 \end{figure}
 
-The effect in the odds space is still constant $e^{\beta_1}$, but visualized as an exponential:
+The effect in the odds space is still constant $e^{\beta_1}$, but visualized as an exponential (multiplicative progression):
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\linewidth]{img/logisticreg/odds_slope.png}
 \end{figure}
 
-On probablities instead the ratio is not constant, but dependes on the position of the logistic curve:
+On probablities instead the ratio is not constant, but depends on the position of the logistic curve:
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\linewidth]{img/logisticreg/prob_logreg_slode.png}
@@ -110,7 +110,7 @@ We can always identify three elements:
     \item linear model of the predictors $\eta_i=\beta_0+\beta_1x_{i1}...+\beta_px_ip{}$
     \item linking function $g(\mu_i)=\eta_i$ where $\mu_i=\mathbb{E}[Y_i|X_i]$
 \end{enumerate}
-To get the basic linear regression model from GLMS, we can take $g()=Id$
+To get the basic linear regression model from GLMS, we can take $g=Id$
 
 
 % --------------------------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ $$
 
 \paragraph{How to choose the threshold}
 The most common choice is taking $t=0.5$, however is really context-dependent: if we'd like a model more selective/conservative we should take a high treshold.
-Sometimes when the datset is \textit{unbalanced} it might be a good idea to set the treshold to the relative frequence of the minority class. Another suggestion is to use the \textit{negative class} frequency (by convention the case $0$ is the negative class) . Otherwise there is also the \textit{Youden's J index} which suggest of using $TPR -FPR$ (see later what this values are).
+Sometimes when the datset is \textit{unbalanced} it might be a good idea to set the treshold to the relative frequence of the minority class or the frequency of the \textit{negative class}(by convention the case $0$ is the negative class) . Otherwise there is also the \textit{Youden's J index} which suggest of using $TPR -FPR$ (see later what this values are).
 
 % --------------------------------------------------------------------------------------------------------
 \vspace{0.3cm}
@@ -142,7 +142,7 @@ Some assumption made for the linear regression moels are relaxed for the logisti
     \item only important/meaningful predictors are included, irrelvant ones arent't added
     \item there is no multicollinearity
     \item the logit event probability is linear in the predictors
-    \item there is no \textbf{perfect separation} := there is no variable that divides perfecly the dataset in classes
+    \item there is no \textbf{perfect separation} := there is no variable that divides perfecly the dataset
 \end{itemize}
 
 \newpage
@@ -165,10 +165,10 @@ this different slope in the log-odds space is reflected also in the probability 
 % --------------------------------------------------------------------------------------------------------
 \vspace{0.3cm}
 \subsection{Logistic model estimation}
-Since our predictors are binary $\{0,1\}\ni Y_i \sim Bernoulli(p_i)$ we have that $\prob(Y_i=y|X_i)=p_i^{y}(1-p_i)^{1-y}$ \arrow a good model should assing high probability to the outcomes that actually occurred and low to those not occurred \arrow a good model chooses $\beta$s so that the observed pattern are as plausible as possible.\\ 
+Since our predictors are binary $\{0,1\}\ni Y_i \sim Bernoulli(p_i)$ we have that $\prob(Y_i=y|X_i)=p_i^{y}(1-p_i)^{1-y}$ \arrow a good model should assign high probability to the outcomes that actually occurred and low to those not occurred \arrow a good model chooses $\beta$s so that the observed pattern are as plausible as possible.\\ 
 To estimate the model we use MLE as always:
 $$
-L(\beta)= \prod_{i=1}^np_i^y(1-p_i)^{1-y} \rightarrow \ell(\beta)=\log L(\beta) = \sum_{i=1}^n y\log p_i + (1-y)\log (1-p_i)
+L(\beta)= \prod_{i=1}^np_i^{y_i}(1-p_i)^{1-y_i} \rightarrow \ell(\beta)=\log L(\beta) = \sum_{i=1}^n y_i\log p_i + (1-y_i)\log (1-p_i)
 $$
 
 \newpage
@@ -195,10 +195,10 @@ where $full$ stand for our model and $null$ for the intercept-only \arrow the la
 
 \vspace{0.5cm}
 Another metric to evaluate our model is the \textbf{deviance} $-2\ell$ where $\ell$ is the log-likelihood, so the larger the better.\\
-This statistic is useful when we want to compare two nested models (not really useful).
+This statistic is useful when we want to compare two nested models (not really useful, just for completeness).
 
 \vspace{0.5cm}
-Another metric used to compare out model with the intercept-only one we can also use the \textbf{McFdadden's pseudo-$R^2$} (not to be confused with the linear regression $R^2$)
+Another metric used to compare out model with the intercept-only one we can also use the \textbf{McFadden's pseudo-$R^2$} (not to be confused with the linear regression $R^2$)
 $$
 R^2_{McFadden}  = 1 -\cfrac{\ell_{full}}{\ell_{null}}
 $$
@@ -228,7 +228,7 @@ We can resume the outcome ouf our classfier in a \textbf{confusion matrix}: it c
 We could see that all thee values are dependet from the threshold chosen. Can we figure out a way to make the evaulation independent from this? We could think of trying out all possible thresholds, and choosing the one maximizing some metric.
 
 \subsubsection{ROC curve \& AUC}
-We compare the \textit{sensitivity} of the model with its FPR=1-\textit{specificity} for all the possible thresholds \textcolor{gray}{(each threshold gives you a diffrent ratio)}.
+We evaluate the model by comparing its  \textit{sensitivity}  with its False Positive Ratio=1-\textit{specificity} for all the possible thresholds \textcolor{gray}{(each threshold gives you a diffrent ratio)}.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\linewidth]{img//logisticreg/ROC_curve.png}
